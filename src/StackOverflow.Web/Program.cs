@@ -1,5 +1,10 @@
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using log4net;
+using StackOverflow.BL;
+using StackOverflow.DAL;
 using StackOverflow.DAL.Extensions;
+using StackOverflow.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +23,15 @@ try
     
     // Add Identity
     builder.Services.AddIdentity();
+
+    //Add Autofac Configuration
+    builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
+    builder.Host.ConfigureContainer<ContainerBuilder>(cb =>
+    {
+        cb.RegisterModule(new WebModule());
+        cb.RegisterModule(new DALModule());
+        cb.RegisterModule(new BLModule());
+    });
 
     // Add services to the container.
     builder.Services.AddControllersWithViews();

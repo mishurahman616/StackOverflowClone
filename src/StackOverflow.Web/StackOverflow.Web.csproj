@@ -7,10 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="9.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Log4Net.AspNetCore" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\StackOverflow.BL\StackOverflow.BL.csproj" />
     <ProjectReference Include="..\StackOverflow.DAL\StackOverflow.DAL.csproj" />
   </ItemGroup>
 
