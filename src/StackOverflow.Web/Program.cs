@@ -1,4 +1,5 @@
 using log4net;
+using StackOverflow.DAL.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +11,9 @@ var log = LogManager.GetLogger(typeof(Program));
 try
 {
     log.Info("Application is starting...");
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnectionString") ?? throw new InvalidOperationException("Connection String Not found");
 
+    builder.Services.AddNHibernate(connectionString);
 
     // Add services to the container.
     builder.Services.AddControllersWithViews();
