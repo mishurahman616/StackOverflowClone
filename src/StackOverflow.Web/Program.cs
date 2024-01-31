@@ -13,7 +13,11 @@ try
     log.Info("Application is starting...");
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnectionString") ?? throw new InvalidOperationException("Connection String Not found");
 
+    // Add NHibernate
     builder.Services.AddNHibernate(connectionString);
+    
+    // Add Identity
+    builder.Services.AddIdentity();
 
     // Add services to the container.
     builder.Services.AddControllersWithViews();
