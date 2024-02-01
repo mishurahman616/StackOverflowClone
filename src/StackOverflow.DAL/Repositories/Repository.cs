@@ -2,6 +2,7 @@
 using NHibernate.Linq;
 using StackOverflow.DAL.Entities.Base;
 using StackOverflow.DAL.Repositories.Interfaces;
+using System.Linq.Expressions;
 
 namespace StackOverflow.DAL.Repositories
 {
@@ -32,6 +33,11 @@ namespace StackOverflow.DAL.Repositories
         public async Task<TEntity> GetById(TKey id)
         {
             return await _session.GetAsync<TEntity>(id);
+        }
+
+        public async Task<TEntity> GetSingle(Expression<Func<TEntity, bool>> predicate)
+        {
+            return await _session.Query<TEntity>().FirstOrDefaultAsync(predicate);
         }
 
         public async Task Update(TEntity entity)

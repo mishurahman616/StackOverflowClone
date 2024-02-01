@@ -2,6 +2,7 @@
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using StackOverflow.DAL.Enums;
 using StackOverflow.Web.Models.QuestionModels;
 
 namespace StackOverflow.Web.Controllers
@@ -48,8 +49,24 @@ namespace StackOverflow.Web.Controllers
                 return View(model);
             }
         }
+
         public IActionResult Edit()
         {
+            return View();
+        }
+
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateVote(Guid questionId, string voteType)
+        {
+            string id = User.Identity.GetUserId();
+            Guid userId = Guid.Parse(id);
+            var model = _scope.Resolve<QuestionVoteModel>();
+            model.UserId = userId;
+            model.QuestionId = questionId;
+            model.VoteType = Enum.Parse<VoteType>(voteType);
+            await model.UpdateVote();
+
             return View();
         }
 

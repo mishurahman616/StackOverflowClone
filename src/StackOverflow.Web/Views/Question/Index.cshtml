@@ -52,10 +52,45 @@
     <script>
         $(document).ready(function () {
             $(".up-vote").on("click", function (e) {
-                alert($(this).data('id'));
+                $.ajax({
+                    url: '@Url.Action("UpdateVote", "Question")', 
+                    type: 'POST',
+                    headers: {
+                        'RequestVerificationToken': $('input:hidden[name="__RequestVerificationToken"]').val()
+                    },
+                    data: {
+                        questionId: $(this).data('id'),
+                        voteType: "UpVote" 
+                    },
+                    success: function (response) {
+                        console.log(response);
+                        window.location.reload();
+                    },
+                    error: function (xhr, status, error) {
+                        
+                    }
+                });
             });
+
             $(".down-vote").click(function (e) {
-                alert($(this).data('id'));
+                $.ajax({
+                    url: '@Url.Action("UpdateVote", "Question")',
+                    type: 'POST',
+                    headers: {
+                        'RequestVerificationToken': $('input:hidden[name="__RequestVerificationToken"]').val()
+                    },
+                    data: {
+                        questionId: $(this).data('id'),
+                        voteType: "DownVote"
+                    },
+                    success: function (response) {
+                        console.log(response);
+                        window.location.reload();
+                    },
+                    error: function (xhr, status, error) {
+
+                    }
+                });
             });
         });
 
