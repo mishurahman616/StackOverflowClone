@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using StackOverflow.BL.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,10 @@ namespace StackOverflow.BL
 
         protected override void Load(ContainerBuilder builder)
         {
+            builder.RegisterType<QuestionService>().As<IQuestionService>().InstancePerDependency();
+
+            builder.RegisterType<UserService>().As<IUserService>().InstancePerDependency();
+
             base.Load(builder);
         }
     }

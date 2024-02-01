@@ -31,7 +31,7 @@ namespace StackOverflow.DAL.Repositories
 
         public async Task<TEntity> GetById(TKey id)
         {
-           return await _session.GetAsync<TEntity>(id);
+            return await _session.GetAsync<TEntity>(id);
         }
 
         public async Task Update(TEntity entity)

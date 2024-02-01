@@ -41,6 +41,7 @@ namespace StackOverflow.DAL.Mappings
             
             ManyToOne(x => x.User, map =>
             {
+                map.NotNullable(true);
                 map.Column("UserId");
             });
 

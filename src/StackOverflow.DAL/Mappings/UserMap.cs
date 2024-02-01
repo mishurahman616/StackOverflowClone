@@ -5,11 +5,38 @@ using StackOverflow.DAL.Entities;
 
 namespace StackOverflow.DAL.EntitiesMappings
 {
-    public class UserMap : SubclassMapping<User>
+    public class UserMap : ClassMapping<User>
     {
         public UserMap()
         {
-            DiscriminatorValue(nameof(User));
+            Table("ApplicationUsers");
+
+            Id(x => x.Id, map => 
+            {
+                map.Generator(Generators.GuidComb);
+            });
+
+            Property(x => x.UserName);
+            Property(x => x.NormalizedUserName);
+            Property(x => x.Email);
+            Property(x => x.NormalizedEmail);
+            Property(x => x.EmailConfirmed);
+            Property(x => x.PasswordHash);
+            Property(x => x.SecurityStamp);
+            Property(x => x.ConcurrencyStamp);
+            Property(x => x.PhoneNumber);
+            Property(x => x.PhoneNumberConfirmed);
+            Property(x => x.TwoFactorEnabled);
+            Property(x => x.LockoutEnd);
+
+            //Property(x => x.LockoutEnd, map =>
+            //{
+            //    map.Column("LockoutEnd");
+            //    map.Type<NHibernate.Type.DateTimeOffsetType>();
+            //});
+
+            Property(x => x.LockoutEnabled);
+            Property(x => x.AccessFailedCount);
 
             Bag(u => u.Questions, map =>
             {
