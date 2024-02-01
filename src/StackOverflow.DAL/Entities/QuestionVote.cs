@@ -1,5 +1,4 @@
-﻿
-using StackOverflow.DAL.Entities.Base;
+﻿using StackOverflow.DAL.Entities.Base;
 using StackOverflow.DAL.Enums;
 
 namespace StackOverflow.DAL.Entities
