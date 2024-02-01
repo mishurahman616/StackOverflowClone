@@ -10,7 +10,5 @@ namespace StackOverflow.DAL.Entities
         public virtual IList<Answer>? Answers { get; set; } = new List<Answer>();
         public virtual IList<QuestionVote>? Votes { get; set; } = new List<QuestionVote>();
         public virtual User User { get; set; }
-
-
     }
 }

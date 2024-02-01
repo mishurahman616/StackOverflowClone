@@ -17,6 +17,8 @@ namespace StackOverflow.Web
             //Question 
             builder.RegisterType<QuestionCreateModel>().AsSelf().InstancePerDependency();
 
+            builder.RegisterType<QuestionListModel>().AsSelf().InstancePerDependency();
+
             base.Load(builder);
         }
     }

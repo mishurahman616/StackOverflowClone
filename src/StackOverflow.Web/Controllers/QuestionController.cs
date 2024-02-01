@@ -16,9 +16,11 @@ namespace StackOverflow.Web.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var model = _scope.Resolve<QuestionListModel>();
+            await model.LoadQuestions();
+            return View(model);
         }
 
         [HttpGet]

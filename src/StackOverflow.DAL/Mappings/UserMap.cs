@@ -16,6 +16,8 @@ namespace StackOverflow.DAL.EntitiesMappings
                 map.Generator(Generators.GuidComb);
             });
 
+            Property(x => x.FirstName);
+            Property(x => x.LastName);
             Property(x => x.UserName);
             Property(x => x.NormalizedUserName);
             Property(x => x.Email);
@@ -28,13 +30,6 @@ namespace StackOverflow.DAL.EntitiesMappings
             Property(x => x.PhoneNumberConfirmed);
             Property(x => x.TwoFactorEnabled);
             Property(x => x.LockoutEnd);
-
-            //Property(x => x.LockoutEnd, map =>
-            //{
-            //    map.Column("LockoutEnd");
-            //    map.Type<NHibernate.Type.DateTimeOffsetType>();
-            //});
-
             Property(x => x.LockoutEnabled);
             Property(x => x.AccessFailedCount);
 

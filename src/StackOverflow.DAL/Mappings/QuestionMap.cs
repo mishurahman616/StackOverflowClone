@@ -43,6 +43,7 @@ namespace StackOverflow.DAL.Mappings
             {
                 map.NotNullable(true);
                 map.Column("UserId");
+                map.Cascade(Cascade.None);
             });
 
         }
