@@ -9,6 +9,7 @@ namespace StackOverflow.DAL.Mappings
         public QuestionMap() 
         {
             Table("Questions");
+
             Id(x => x.Id, map =>
             {
                 map.Generator(Generators.GuidComb);
@@ -23,6 +24,26 @@ namespace StackOverflow.DAL.Mappings
             {
                 map.Length(1000);
             });
+
+            Bag(x => x.Answers, map =>
+            {
+                map.Key(x => x.Column("QuestionId"));
+                map.Inverse(false);
+                map.Cascade(Cascade.All | Cascade.DeleteOrphans);
+            }, rel=>rel.OneToMany());
+
+            Bag(x => x.Votes, map =>
+            {
+                map.Key(x => x.Column("QuestionId"));
+                map.Inverse(false);
+                map.Cascade(Cascade.All | Cascade.DeleteOrphans);
+            }, rel => rel.OneToMany());
+            
+            ManyToOne(x => x.User, map =>
+            {
+                map.Column("UserId");
+            });
+
         }
     }
 }
