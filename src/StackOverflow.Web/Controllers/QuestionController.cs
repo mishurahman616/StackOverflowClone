@@ -46,6 +46,12 @@ namespace StackOverflow.Web.Controllers
                 var userId = User.Identity.GetUserId();
                 model.UserId = Guid.Parse(userId);
                 await model.CreateQuestion();
+                TempData.Put<ResponseModel>("ResponseMessage", new ResponseModel
+                {
+                    Message = "Question Create Successfully",
+                    Type = ResponseTypes.Success
+                });
+                _logger.LogInformation("Question Created By " + userId);
                 return View(model);
             }catch (Exception ex)
             {
@@ -59,6 +65,7 @@ namespace StackOverflow.Web.Controllers
             return View();
         }
 
+        [AllowAnonymous]
         public async Task<IActionResult> Details([FromRoute] Guid id)
         {
             var model = _scope.Resolve<QuestionDetailsModel>();

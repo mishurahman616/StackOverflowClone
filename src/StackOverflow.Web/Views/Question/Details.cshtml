@@ -28,9 +28,7 @@
                     </div>
 
                     <div class="col-11">
-                        <b>
-                            <a class="text-decoration-none" asp-action="Detials" asp-route-id="@Model.Question.Id.ToString("N")" asp-controller="Question">@Model.Question.Title</a>
-                        </b>
+                        <b>@Model.Question.Title</b>
                         <p>@Model.Question.Body</p>
                     </div>
                 </div>
@@ -91,7 +89,7 @@
     <div class="row justify-content-center">
         <div class="col">
             <div class="mt-5">
-                <form asp-action="Create" asp-controller="Question" asp-area="" method="post" asp-antiforgery="true">
+                <form asp-action="Create" asp-controller="Answer" asp-area="" method="post" asp-antiforgery="true">
                     <div class="mb-3">
                         <label for="Body" class="form-label fw-bolder">Your answer</label>
                         <textarea class="form-control" for="Body" rows="4"></textarea>
