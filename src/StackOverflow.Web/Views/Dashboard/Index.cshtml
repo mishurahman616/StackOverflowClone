@@ -19,7 +19,7 @@
             <div class="card">
                 <div class="card-header"><b>Questions</b></div>
                 <div class="card-body"><p>You have asked @Model.Questions?.Count Questions</p> </div>
-                <div class="m-4"><a class="btn btn-outline-primary">See List</a></div>
+                <div class="m-4"><a class="btn btn-outline-primary" asp-action="MyQuestion" asp-controller="User" >See List</a></div>
             </div>
         </div>
 
@@ -27,7 +27,7 @@
             <div class="card">
                 <div class="card-header"><b>Answers</b></div>
                 <div class="card-body"><p> You have answered @Model.Answers?.Count questions</p></div>
-                <div class="m-4"><a class="btn btn-outline-primary">See List</a></div>
+                <div class="m-4"><a class="btn btn-outline-primary" asp-action="MyAnswer" asp-controller="User">See List</a></div>
             </div>
         </div>
 
@@ -37,7 +37,7 @@
                 <div class="card-body">
                     <p>You have given vote to @Model.QuestionVotes?.Count Questions</p>
                     </div>
-                <div class ="m-4"><a class="btn btn-outline-primary">See List</a></div>
+                <div class="m-4"><a class="btn btn-outline-primary" asp-action="MyVotedQuestion" asp-controller="User">See List</a></div>
             </div>
         </div>
 
@@ -47,7 +47,7 @@
                 <div class="card-body">
                     <p>You have given vote to @Model.AnswerVotes?.Count Answers</p>
                 </div>
-                <div class="m-4"><a class="btn btn-outline-primary">See List</a></div>
+                <div class="m-4"><a class="btn btn-outline-primary" asp-action="MyVotedAnswer" asp-controller="User">See List</a></div>
             </div>
         </div>
     </div>

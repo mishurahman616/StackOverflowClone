@@ -1,0 +1,60 @@
+﻿@using StackOverflow.DAL.Entities
+@model User
+@{
+    ViewData["Title"] = "My Voted Answer";
+}
+
+@if (Model.AnswerVotes?.Count > 0)
+{
+    <div class="container-fluid">
+        <h4>My Voted Answers</h4>
+        <partial name="_ResponsePartial" />
+        @foreach (var answerVote in Model.AnswerVotes)
+        {
+            var answer = answerVote.Answer;
+            <div class="row my-3">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body d-flex">
+                            <div class="col-1">
+
+                                <div>
+                                    <a class="up-vote" data-id="@answer.Id.ToString("N")"><i class=" fa fa-caret-up fa-2x"></i></a>
+                                </div>
+                                <div>
+                                    <a class="down-vote" data-id="@answer.Id.ToString("N")"><i class="fa fa-caret-down fa-2x"></i></a>
+                                </div>
+                            </div>
+
+                            <div class="col-11">
+                                <p>@answer.Body</p>
+                                <div class="d-flex justify-content-end">
+                                    <a class="me-2" asp-route-id="@answer.Id.ToString("N")" asp-action="Edit" asp-controller="Question">Edit</a>
+                                    <a asp-route-id="@answer.Id.ToString("N")" asp-action="Delete" asp-controller="Answer">Delete</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer d-flex justify-content-between">
+                            <div class="mr-3">
+                                Votes: <span class="vote-count-@answer.Id.ToString("N")">@answer.Votes?.Sum(vote => (int)vote.VoteType)</span>
+                            </div>
+                            <div class="mr-3">
+                                <a asp-route-id="@answer.Question.Id.ToString("N")" asp-action="Details" asp-controller="Question">See Question</a>
+                            </div>
+                            <div>
+                                Asked By: @(answer.User != null ? answer.User.FirstName : "")
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    @section Scripts {
+    <partial name="_JQueryVoteUpdteScriptPartial" />
+    }
+}
+else
+{
+    <h3>No Answer You Have Voted </h3>
+}
