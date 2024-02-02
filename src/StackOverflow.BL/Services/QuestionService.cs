@@ -1,4 +1,5 @@
-﻿using StackOverflow.DAL.Entities;
+﻿using StackOverflow.BL.DTOs;
+using StackOverflow.DAL.Entities;
 using StackOverflow.DAL.Enums;
 using StackOverflow.DAL.UnitOfWorks;
 using System.Linq.Expressions;
@@ -57,13 +58,16 @@ namespace StackOverflow.BL.Services
             throw new NotImplementedException();
         }
 
-        public async Task UpdateQuestionVote(Guid questionId, Guid userId, VoteType voteType)
+        public async Task<VoteUpdateStatus> UpdateQuestionVote(Guid questionId, Guid userId, VoteType voteType)
         {
             var user = await _unitOfWork.Users.GetById(userId);
             var question = await _unitOfWork.Questions.GetById(questionId);
 
             if (user == null || question == null)
-                return;
+            {
+                return VoteUpdateStatus.NoChange;
+            }
+                
 
             var existingVote = await _unitOfWork.QuestionVotes.GetSingle(x => x.Question.Id == questionId && x.User.Id == userId);
             var isNewVote = existingVote == null;
@@ -83,12 +87,16 @@ namespace StackOverflow.BL.Services
                 };
 
                 await _unitOfWork.QuestionVotes.Create(newVote);
+                await _unitOfWork.Commit();
+                return isNewVote? VoteUpdateStatus.NewVoteInserted : VoteUpdateStatus.VoteUpdated;
             }
             else if (existingVote.VoteType == voteType)
             {
                 await _unitOfWork.QuestionVotes.Delete(existingVote);
+                await _unitOfWork.Commit();
+                return VoteUpdateStatus.VoteRemoved;
             }
-            await _unitOfWork.Commit();
+            return VoteUpdateStatus.NoChange;
         }
     }
 }

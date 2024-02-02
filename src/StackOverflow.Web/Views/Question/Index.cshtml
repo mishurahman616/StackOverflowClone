@@ -7,7 +7,9 @@
 }
 @model QuestionListModel
 
-<div class="container">
+<div class="container question-list">
+    <div class="question-list-heading"></div>
+    <partial name="_ResponsePartial" />
     @foreach(var question in Model.Questions)
     {
         <div class="row my-3">
@@ -32,15 +34,15 @@
                         </div>
                     </div>
                     <div class="card-footer d-flex justify-content-between">
-                        <span class="mr-3">
-                            Votes: @question.Votes?.Sum(vote => (int)vote.VoteType)
-                        </span>
-                        <span class="mr-3">
+                        <div class="mr-3">
+                            Votes: <span class="vote-count-@question.Id.ToString("N")">@question.Votes?.Sum(vote => (int)vote.VoteType)</span>
+                        </div>
+                        <div class="mr-3">
                             Answers: @question.Answers?.Count()
-                        </span>
-                        <span>
+                        </div>
+                        <div>
                             Asked By: @(question.User != null ? question.User.FirstName : "")
-                        </span>
+                        </div>
                     </div>
                 </div>        
             </div>
@@ -51,28 +53,50 @@
 @section Scripts{
     <script>
         $(document).ready(function () {
+            let loginMessage = 'To vote, you need to <a href="/Account/Login" class="alert-link">login</a>.';
             $(".up-vote").on("click", function (e) {
+                let id = $(this).data('id')
                 $.ajax({
-                    url: '@Url.Action("UpdateVote", "Question")', 
+                    url: '@Url.Action("UpdateVote", "Question")',
                     type: 'POST',
                     headers: {
                         'RequestVerificationToken': $('input:hidden[name="__RequestVerificationToken"]').val()
                     },
                     data: {
                         questionId: $(this).data('id'),
-                        voteType: "UpVote" 
+                        voteType: "UpVote"
                     },
                     success: function (response) {
-                        console.log(response);
-                        window.location.reload();
+                        if (response === "NewVoteInserted") {
+                            incrementVoteCount(id);
+                            showVoteAlert(response, "success")
+                        } 
+                        else if (response === "VoteUpdated") {
+                            incrementVoteCount(id);
+                            incrementVoteCount(id);
+                            showVoteAlert(response, "success")
+                        } 
+                        else if (response === "VoteRemoved") {
+                            decrementVoteCount(id);
+                            showVoteAlert(response, "success")
+                        }
                     },
                     error: function (xhr, status, error) {
-                        
+                        if (xhr.status === 401) {
+                            // Unauthorized access
+                            showVoteAlert(loginMessage, "danger")
+                        } 
+                        else {
+                            // Other error,
+                            console.error("Error: " + xhr.responseText);
+                        }
                     }
                 });
             });
 
+
             $(".down-vote").click(function (e) {
+                let id = $(this).data('id')
                 $.ajax({
                     url: '@Url.Action("UpdateVote", "Question")',
                     type: 'POST',
@@ -84,15 +108,56 @@
                         voteType: "DownVote"
                     },
                     success: function (response) {
-                        console.log(response);
-                        window.location.reload();
+                        if (response === "NewVoteInserted") {
+                            decrementVoteCount(id);
+                            showVoteAlert(response, "success")
+                        } 
+                        else if (response === "VoteUpdated") {
+                            decrementVoteCount(id);
+                            decrementVoteCount(id);
+                            showVoteAlert(response, "success")
+                        } 
+                        else if (response === "VoteRemoved") {
+                            incrementVoteCount(id);
+                            showVoteAlert(response, "success")
+                        }
                     },
                     error: function (xhr, status, error) {
-
+                        if (xhr.status === 401) {
+                            // Unauthorized access
+                            showVoteAlert(loginMessage, "danger")
+                        } 
+                        else {
+                            // Other error
+                            console.error("Error: " + xhr.responseText);
+                        }
                     }
                 });
             });
+
+            function incrementVoteCount(id) {
+                let voteCountElement = $(".vote-count-" + id);
+                let currentCount = parseInt(voteCountElement.text());
+                voteCountElement.text(currentCount + 1);
+            }
+
+            function decrementVoteCount(id) {
+                let voteCountElement = $(".vote-count-" + id);
+                let currentCount = parseInt(voteCountElement.text());
+                voteCountElement.text(currentCount - 1);
+            }
+
+            function showVoteAlert(message, type) {
+                // Create a Bootstrap danger alert
+                var alertHtml = '<div class="alert alert-'+type+' alert-dismissible fade show" role="alert">' +
+                    message +
+                    '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">';
+
+                // Append the alert to the body
+                $('.question-list-heading').append(alertHtml);
+            }
         });
+
 
     </script>
 }

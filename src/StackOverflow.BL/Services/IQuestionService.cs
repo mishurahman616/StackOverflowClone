@@ -1,4 +1,5 @@
-﻿using StackOverflow.DAL.Entities;
+﻿using StackOverflow.BL.DTOs;
+using StackOverflow.DAL.Entities;
 using StackOverflow.DAL.Enums;
 using System.Linq.Expressions;
 
@@ -13,7 +14,7 @@ namespace StackOverflow.BL.Services
         Task<IList<Question>> GetQuestionsByUserId(Guid userId);
         Task<IList<Question>> GetAllQuestions();
         Task<IList<Question>> GetQuestions(Expression<Func<Question, bool>> filters);
-        Task UpdateQuestionVote(Guid questionId, Guid userId, VoteType voteType);
+        Task<VoteUpdateStatus> UpdateQuestionVote(Guid questionId, Guid userId, VoteType voteType);
 
 
     }
