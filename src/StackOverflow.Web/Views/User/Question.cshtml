@@ -1,0 +1,49 @@
+﻿
+<partial name="_ResponsePartial" />
+@foreach (var question in Model.Questions)
+{
+    <div class="row my-3">
+        <div class="col">
+            <div class="card">
+                <div class="card-body d-flex">
+                    <div class="col-1">
+
+                        <div>
+                            <a class="up-vote" data-id="@question.Id.ToString("N")"><i class=" fa fa-caret-up fa-2x"></i></a>
+                        </div>
+                        <div>
+                            <a class="down-vote" data-id="@question.Id.ToString("N")"><i class="fa fa-caret-down fa-2x"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="col-11">
+                        <b>
+                            <a class="text-decoration-none" asp-action="Details" asp-route-id="@question.Id.ToString("N")" asp-controller="Question">@question.Title</a>
+                        </b>
+                        <p>@question.Body</p>
+                        <div class="d-flex justify-content-end">
+                            <a class="me-2" asp-route-id="@question.Id.ToString("N")" asp-action="Edit" asp-controller="Question">Edit</a>
+                            <a asp-route-id="@question.Id.ToString("N")" asp-action="Delete" asp-controller="Question">Delete</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer d-flex justify-content-between">
+                    <div class="mr-3">
+                        Votes: <span class="vote-count-@question.Id.ToString("N")">@question.Votes?.Sum(vote => (int)vote.VoteType)</span>
+                    </div>
+                    <div class="mr-3">
+                        Answers: @question.Answers?.Count()
+                    </div>
+                    <div>
+                        Asked By: @(question.User != null ? question.User.FirstName : "")
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+</div>
+
+@section Scripts {
+    <partial name="_JQueryVoteUpdteScriptPartial" />
+}

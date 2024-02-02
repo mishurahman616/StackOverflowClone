@@ -15,6 +15,8 @@ namespace StackOverflow.Web
 
             builder.RegisterType<LoginModel>().AsSelf().InstancePerDependency();
 
+            builder.RegisterType<UserModel>().AsSelf().InstancePerDependency();
+
             //Question 
             builder.RegisterType<QuestionCreateModel>().AsSelf().InstancePerDependency();
 
@@ -28,6 +30,8 @@ namespace StackOverflow.Web
             builder.RegisterType<AnswerCreateModel>().AsSelf().InstancePerDependency();
             
             builder.RegisterType<AnswerVoteModel>().AsSelf().InstancePerDependency();
+   
+            builder.RegisterType<AnswerListModel>().AsSelf().InstancePerDependency();
 
             base.Load(builder);
         }

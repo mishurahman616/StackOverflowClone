@@ -1,0 +1,54 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Dashboard";
+}
+@using StackOverflow.DAL.Entities
+@model User
+
+<div class="my-3 row">
+    <div class="d-flex justify-content-end">
+        <a class="btn btn-primary" asp-action="Create" asp-controller="Question">Ask Question</a>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="row mt-4">
+        <div class="col">
+            <div class="card">
+                <div class="card-header"><b>Questions</b></div>
+                <div class="card-body"><p>You have asked @Model.Questions?.Count Questions</p> </div>
+                <div class="m-4"><a class="btn btn-outline-primary">See List</a></div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card">
+                <div class="card-header"><b>Answers</b></div>
+                <div class="card-body"><p> You have answered @Model.Answers?.Count questions</p></div>
+                <div class="m-4"><a class="btn btn-outline-primary">See List</a></div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card">
+                <div class="card-header"><b>Questions - Vote</b></div>
+                <div class="card-body">
+                    <p>You have given vote to @Model.QuestionVotes?.Count Questions</p>
+                    </div>
+                <div class ="m-4"><a class="btn btn-outline-primary">See List</a></div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card">
+                <div class="card-header"><b>Answer - Vote</b></div>
+                <div class="card-body">
+                    <p>You have given vote to @Model.AnswerVotes?.Count Answers</p>
+                </div>
+                <div class="m-4"><a class="btn btn-outline-primary">See List</a></div>
+            </div>
+        </div>
+    </div>
+</div>
