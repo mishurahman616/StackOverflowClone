@@ -2,15 +2,10 @@
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using StackOverflow.BL.DTOs;
-using StackOverflow.DAL.Entities;
 using StackOverflow.DAL.Enums;
 using StackOverflow.Web.Extensions;
 using StackOverflow.Web.Models;
-using StackOverflow.Web.Models.AnswerModels;
 using StackOverflow.Web.Models.QuestionModels;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace StackOverflow.Web.Controllers
 {
@@ -77,13 +72,13 @@ namespace StackOverflow.Web.Controllers
 
 
         [ValidateAntiForgeryToken]
-        public string UpdateVote(Guid questionId, string voteType)
+        public string UpdateVote(Guid id, string voteType)
         {
-            string id = User.Identity.GetUserId();
-            Guid userId = Guid.Parse(id);
+            string uId = User.Identity.GetUserId();
+            Guid userId = Guid.Parse(uId);
             var model = _scope.Resolve<QuestionVoteModel>();
             model.UserId = userId;
-            model.QuestionId = questionId;
+            model.QuestionId = id;
             model.VoteType = Enum.Parse<VoteType>(voteType);
             return model.UpdateVote().Result.ToString();
         }

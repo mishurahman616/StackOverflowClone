@@ -18,6 +18,8 @@ namespace StackOverflow.BL
 
             builder.RegisterType<UserService>().As<IUserService>().InstancePerDependency();
 
+            builder.RegisterType<AnswerService>().As<IAnswerService>().InstancePerDependency();
+
             base.Load(builder);
         }
     }

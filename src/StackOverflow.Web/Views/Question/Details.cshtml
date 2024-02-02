@@ -58,10 +58,10 @@
                         <div class="col-1">
 
                             <div>
-                                    <a class="up-vote" data-id="@answer.Id.ToString("N")"><i class=" fa fa-caret-up fa-2x"></i></a>
+                                    <a class="up-vote" data-answer="true" data-id="@answer.Id.ToString("N")"><i class=" fa fa-caret-up fa-2x"></i></a>
                             </div>
                             <div>
-                                    <a class="down-vote" data-id="@answer.Id.ToString("N")"><i class="fa fa-caret-down fa-2x"></i></a>
+                                    <a class="down-vote" data-answer="true" data-id="@answer.Id.ToString("N")"><i class="fa fa-caret-down fa-2x"></i></a>
                             </div>
                         </div>
 
@@ -106,31 +106,34 @@
     <script>
         $(document).ready(function () {
             let loginMessage = 'To vote, you need to <a href="/Account/Login" class="alert-link">login</a>.';
+
             $(".up-vote").on("click", function (e) {
                 let id = $(this).data('id')
+                let isAnswer = $(this).data('answer');
                 $.ajax({
-                    url: '@Url.Action("UpdateVote", "Question")',
+                    url: isAnswer === true ? '@Url.Action("UpdateVote", "Answer")' : '@Url.Action("UpdateVote", "Question")',
                     type: 'POST',
                     headers: {
                         'RequestVerificationToken': $('input:hidden[name="__RequestVerificationToken"]').val()
                     },
                     data: {
-                        questionId: $(this).data('id'),
+                        
+                        id: id,
                         voteType: "UpVote"
                     },
                     success: function (response) {
                         if (response === "NewVoteInserted") {
                             incrementVoteCount(id);
-                            showVoteAlert(response, "success")
+                            showVoteAlert("Vote Added", "success")
                         }
                         else if (response === "VoteUpdated") {
                             incrementVoteCount(id);
                             incrementVoteCount(id);
-                            showVoteAlert(response, "success")
+                            showVoteAlert("Vote Updated", "success")
                         }
                         else if (response === "VoteRemoved") {
                             decrementVoteCount(id);
-                            showVoteAlert(response, "success")
+                            showVoteAlert("Vote Removed", "success")
                         }
                     },
                     error: function (xhr, status, error) {
@@ -149,29 +152,30 @@
 
             $(".down-vote").click(function (e) {
                 let id = $(this).data('id')
+                let isAnswer = $(this).data('answer');
                 $.ajax({
-                    url: '@Url.Action("UpdateVote", "Question")',
+                    url: isAnswer === true ? '@Url.Action("UpdateVote", "Answer")' : '@Url.Action("UpdateVote", "Question")',
                     type: 'POST',
                     headers: {
                         'RequestVerificationToken': $('input:hidden[name="__RequestVerificationToken"]').val()
                     },
                     data: {
-                        questionId: $(this).data('id'),
+                        id: id,
                         voteType: "DownVote"
                     },
                     success: function (response) {
                         if (response === "NewVoteInserted") {
                             decrementVoteCount(id);
-                            showVoteAlert(response, "success")
+                            showVoteAlert("Vote Added", "success")
                         }
                         else if (response === "VoteUpdated") {
                             decrementVoteCount(id);
                             decrementVoteCount(id);
-                            showVoteAlert(response, "success")
+                            showVoteAlert("Vote Updated", "success")
                         }
                         else if (response === "VoteRemoved") {
                             incrementVoteCount(id);
-                            showVoteAlert(response, "success")
+                            showVoteAlert("Vote Removed", "success")
                         }
                     },
                     error: function (xhr, status, error) {
@@ -207,7 +211,12 @@
 
                 // Append the alert to the body
                 $('.question-list-message').append(alertHtml);
+
+                setTimeout(function () {
+                    $(".alert").fadeOut();
+                }, 2000);
             }
+            
         });
 
 

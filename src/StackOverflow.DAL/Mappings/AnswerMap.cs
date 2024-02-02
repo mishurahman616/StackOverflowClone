@@ -36,6 +36,12 @@ namespace StackOverflow.DAL.Mappings
                 map.Cascade(Cascade.Persist);
                 map.Column("QuestionId");
             });
+
+            Bag(x => x.Votes, map =>
+            {
+                map.Key(x => x.Column("AnswerId"));
+                map.Cascade(Cascade.DeleteOrphans);
+            }, rel=>rel.OneToMany());
         }
     }
 }

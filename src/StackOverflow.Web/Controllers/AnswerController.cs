@@ -2,6 +2,7 @@
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using StackOverflow.DAL.Enums;
 using StackOverflow.Web.Extensions;
 using StackOverflow.Web.Models;
 using StackOverflow.Web.Models.AnswerModels;
@@ -50,7 +51,18 @@ namespace StackOverflow.Web.Controllers
                 });
             }
             return RedirectToAction("Details", "Question", new { id = model.QuestionId });
+        }
 
+        [ValidateAntiForgeryToken]
+        public string UpdateVote(Guid id, string voteType)
+        {
+            string uId = User.Identity.GetUserId();
+            Guid userId = Guid.Parse(uId);
+            var model = _scope.Resolve<AnswerVoteModel>();
+            model.UserId = userId;
+            model.AnswerId = id;
+            model.VoteType = Enum.Parse<VoteType>(voteType);
+            return model.UpdateVote().Result.ToString();
         }
     }
 }

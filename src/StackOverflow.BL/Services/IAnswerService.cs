@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using StackOverflow.BL.DTOs;
+using StackOverflow.DAL.Entities;
+using StackOverflow.DAL.Enums;
 
 namespace StackOverflow.BL.Services
 {
-    internal interface IAnswerService
+    public interface IAnswerService
     {
+        Task AddAnswer(Answer answer);
+        Task<VoteUpdateStatus> UpdateAnswerVote(Guid answerId, Guid userId, VoteType voteType);
     }
 }

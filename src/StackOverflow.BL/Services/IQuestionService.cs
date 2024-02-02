@@ -15,9 +15,5 @@ namespace StackOverflow.BL.Services
         Task<IList<Question>> GetAllQuestions();
         Task<IList<Question>> GetQuestions(Expression<Func<Question, bool>> filters);
         Task<VoteUpdateStatus> UpdateQuestionVote(Guid questionId, Guid userId, VoteType voteType);
-
-        Task AddAnswer(Answer answer);
-
-
     }
 }

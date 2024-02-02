@@ -9,6 +9,7 @@ namespace StackOverflow.Web.Models.AnswerModels
     {
         private IQuestionService _questionService;
         private IUserService _userService;
+        private IAnswerService _answerService;
 
         [Required]
         [MinLength(10, ErrorMessage = "{0} should be atleast {1} character long")]
@@ -24,17 +25,20 @@ namespace StackOverflow.Web.Models.AnswerModels
         }
 
         public AnswerCreateModel(IQuestionService questionService,
-            IUserService userService
+            IUserService userService,
+            IAnswerService answerService
             )
         {
             _questionService = questionService;
             _userService = userService;
+            _answerService = answerService;
         }
 
         public void ResolveDependency(ILifetimeScope scope)
         {
             _questionService = scope.Resolve<IQuestionService>();
             _userService = scope.Resolve<IUserService>();
+            _answerService = scope.Resolve<IAnswerService>();
         }
 
         public async Task CreateAnswer()
@@ -46,7 +50,7 @@ namespace StackOverflow.Web.Models.AnswerModels
             answer.User = user;
             answer.Question = question;
 
-            await _questionService.AddAnswer(answer);
+            await _answerService.AddAnswer(answer);
         }
     }
 }
