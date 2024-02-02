@@ -12,6 +12,7 @@ using System.Text.Json.Serialization;
 
 namespace StackOverflow.Web.Controllers
 {
+    [Authorize]
     public class QuestionController : Controller
     {
         private readonly ILifetimeScope _scope;
@@ -21,7 +22,7 @@ namespace StackOverflow.Web.Controllers
             _scope = scope;
             _logger = logger;
         }
-
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             var model = _scope.Resolve<QuestionListModel>();
@@ -30,7 +31,6 @@ namespace StackOverflow.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         public IActionResult Create()
         {
             return View();
@@ -38,7 +38,6 @@ namespace StackOverflow.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize]
         public async Task<IActionResult> Create(QuestionCreateModel model)
         {
             try
@@ -60,7 +59,14 @@ namespace StackOverflow.Web.Controllers
             return View();
         }
 
-        [Authorize]
+        public async Task<IActionResult> Details([FromRoute] Guid id)
+        {
+            var model = _scope.Resolve<QuestionDetailsModel>();
+            await model.LoadQuestion(id);
+            return View(model);
+        }
+
+
         [ValidateAntiForgeryToken]
         public string UpdateVote(Guid questionId, string voteType)
         {

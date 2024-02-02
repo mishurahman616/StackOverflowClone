@@ -3,25 +3,58 @@
 *@
 @{
     @using StackOverflow.Web.Models.QuestionModels;
-    ViewData["Title"] = "Questions";
+    ViewData["Title"] = "Question Details";
 }
-@model QuestionListModel
+@model QuestionDetailsModel
 <div class="container mt-4">
-    <form class="form-inline">
-        <div class="input-group">
-            <input type="text" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="search-addon">
-            <div class="input-group-append">
-                <button class="btn btn-outline-primary" type="button" id="search-addon"><i class="fa fa-search"></i></button>
+    <h4>Question</h4>
+</div>
+<div class="container question-details">
+    <div class="question-list-message">
+    </div>
+    <partial name="_ResponsePartial" />
+        <div class="row my-3">
+        <div class="col">
+            <div class="card">
+                <div class="card-body d-flex">
+                    <div class="col-1">
+
+                        <div>
+                            <a class="up-vote" data-id="@Model.Question.Id.ToString("N")"><i class=" fa fa-caret-up fa-2x"></i></a>
+                        </div>
+                        <div>
+                            <a class="down-vote" data-id="@Model.Question.Id.ToString("N")"><i class="fa fa-caret-down fa-2x"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="col-11">
+                        <b>
+                            <a class="text-decoration-none" asp-action="Detials" asp-route-id="@Model.Question.Id.ToString("N")" asp-controller="Question">@Model.Question.Title</a>
+                        </b>
+                        <p>@Model.Question.Body</p>
+                    </div>
+                </div>
+                <div class="card-footer d-flex justify-content-between">
+                    <div class="mr-3">
+                        Votes: <span class="vote-count-@Model.Question.Id.ToString("N")">@Model.Question.Votes?.Sum(vote => (int)vote.VoteType)</span>
+                    </div>
+                    <div>
+                        Asked By: @(Model.Question.User != null ? Model.Question.User.FirstName : "")
+                    </div>
+                </div>
             </div>
         </div>
-    </form>
+    </div>
+</div>
+<div class="container my-4">
+    <h4>Answers: <span class="answer-count"> (@Model.Question.Answers?.Count())</span></h4>
 </div>
 <div class="container question-list">
     <div class="question-list-message">
-
     </div>
     <partial name="_ResponsePartial" />
-    @foreach(var question in Model.Questions)
+    @if(Model.Question?.Answers?.Count()>0)
+    @foreach (var answer in Model.Question.Answers)
     {
         <div class="row my-3">
             <div class="col">
@@ -30,38 +63,49 @@
                         <div class="col-1">
 
                             <div>
-                                <a class="up-vote" data-id="@question.Id.ToString("N")" ><i class=" fa fa-caret-up fa-2x"></i></a>
+                                    <a class="up-vote" data-id="@answer.Id.ToString("N")"><i class=" fa fa-caret-up fa-2x"></i></a>
                             </div>
                             <div>
-                                <a class="down-vote" data-id="@question.Id.ToString("N")" ><i class="fa fa-caret-down fa-2x"></i></a>
+                                    <a class="down-vote" data-id="@answer.Id.ToString("N")"><i class="fa fa-caret-down fa-2x"></i></a>
                             </div>
                         </div>
 
                         <div class="col-11">
-                            <b>
-                                <a class="text-decoration-none" asp-action="Details" asp-route-id="@question.Id.ToString("N")" asp-controller="Question">@question.Title</a>
-                            </b>
-                            <p>@question.Body</p>
+                                <p>@answer.Body</p>
                         </div>
                     </div>
                     <div class="card-footer d-flex justify-content-between">
                         <div class="mr-3">
-                            Votes: <span class="vote-count-@question.Id.ToString("N")">@question.Votes?.Sum(vote => (int)vote.VoteType)</span>
-                        </div>
-                        <div class="mr-3">
-                            Answers: @question.Answers?.Count()
+                                Votes: <span class="vote-count-@answer.Id.ToString("N")">@answer.Votes?.Sum(vote => (int)vote.VoteType)</span>
                         </div>
                         <div>
-                            Asked By: @(question.User != null ? question.User.FirstName : "")
+                                Answered By: @(answer.User != null ? answer.User.FirstName : "")
                         </div>
                     </div>
-                </div>        
+                </div>
             </div>
         </div>
     }
 </div>
-
-@section Scripts{
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col">
+            <div class="mt-5">
+                <form asp-action="Create" asp-controller="Question" asp-area="" method="post" asp-antiforgery="true">
+                    <div class="mb-3">
+                        <label for="Body" class="form-label fw-bolder">Your answer</label>
+                        <textarea class="form-control" for="Body" rows="4"></textarea>
+                        <span for="Body" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3 text-center">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
     <script>
         $(document).ready(function () {
             let loginMessage = 'To vote, you need to <a href="/Account/Login" class="alert-link">login</a>.';
@@ -81,12 +125,12 @@
                         if (response === "NewVoteInserted") {
                             incrementVoteCount(id);
                             showVoteAlert(response, "success")
-                        } 
+                        }
                         else if (response === "VoteUpdated") {
                             incrementVoteCount(id);
                             incrementVoteCount(id);
                             showVoteAlert(response, "success")
-                        } 
+                        }
                         else if (response === "VoteRemoved") {
                             decrementVoteCount(id);
                             showVoteAlert(response, "success")
@@ -96,7 +140,7 @@
                         if (xhr.status === 401) {
                             // Unauthorized access
                             showVoteAlert(loginMessage, "danger")
-                        } 
+                        }
                         else {
                             // Other error,
                             console.error("Error: " + xhr.responseText);
@@ -122,12 +166,12 @@
                         if (response === "NewVoteInserted") {
                             decrementVoteCount(id);
                             showVoteAlert(response, "success")
-                        } 
+                        }
                         else if (response === "VoteUpdated") {
                             decrementVoteCount(id);
                             decrementVoteCount(id);
                             showVoteAlert(response, "success")
-                        } 
+                        }
                         else if (response === "VoteRemoved") {
                             incrementVoteCount(id);
                             showVoteAlert(response, "success")
@@ -137,7 +181,7 @@
                         if (xhr.status === 401) {
                             // Unauthorized access
                             showVoteAlert(loginMessage, "danger")
-                        } 
+                        }
                         else {
                             // Other error
                             console.error("Error: " + xhr.responseText);
@@ -160,7 +204,7 @@
 
             function showVoteAlert(message, type) {
                 // Create a Bootstrap danger alert
-                var alertHtml = '<div class="alert alert-'+type+' alert-dismissible fade show" role="alert">' +
+                var alertHtml = '<div class="alert alert-' + type + ' alert-dismissible fade show" role="alert">' +
                     message +
                     '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">';
 

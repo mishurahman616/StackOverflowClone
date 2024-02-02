@@ -33,14 +33,14 @@ namespace StackOverflow.BL.Services
             throw new NotImplementedException();
         }
 
-        public Task<IList<Question>> GetAllQuestions()
+        public async Task<IList<Question>> GetAllQuestions()
         {
-            return _unitOfWork.Questions.GetAll();
+            return await _unitOfWork.Questions.GetAll();
         }
 
-        public Task<Question> GetQuestionById(Guid qestionId)
+        public async Task<Question> GetQuestionById(Guid qestionId)
         {
-            throw new NotImplementedException();
+            return await _unitOfWork.Questions.GetById(qestionId);
         }
 
         public Task<IList<Question>> GetQuestions(Expression<Func<Question, bool>> filters)
