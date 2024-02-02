@@ -31,7 +31,7 @@
                             <p>@question.Body</p>
                             <div class="d-flex justify-content-end">
                                 <a class="me-2" asp-route-id="@question.Id.ToString("N")" asp-action="Edit" asp-controller="Question">Edit</a>
-                                <a asp-route-id="@question.Id.ToString("N")" asp-action="Delete" asp-controller="Question">Delete</a>
+                                    <a asp-route-id="@question.Id.ToString("N")" asp-action="DeleteQuestion" asp-controller="User">Delete</a>
                             </div>
                         </div>
                     </div>

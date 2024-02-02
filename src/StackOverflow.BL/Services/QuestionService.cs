@@ -28,9 +28,11 @@ namespace StackOverflow.BL.Services
             }
         }
 
-        public Task DeleteQuestion(Question question)
+        public async Task DeleteQuestion(Question question)
         {
-            throw new NotImplementedException();
+            await _unitOfWork.BeginTransaction();
+            await _unitOfWork.Questions.Delete(question);
+            await _unitOfWork.Commit();
         }
 
         public async Task<IList<Question>> GetAllQuestions()

@@ -28,5 +28,19 @@ namespace StackOverflow.Web.Models.QuestionModels
         {
             Questions = (List<Question>)await _questionService.GetAllQuestions();
         }
+
+        public async Task DeleteQuestionByUser(Guid userId, Guid questionId)
+        {
+            var question = await _questionService.GetQuestionById(questionId);
+            if(question != null && question.User.Id == userId) 
+            {
+                await _questionService.DeleteQuestion(question);
+            }
+            else
+            {
+                throw new Exception("Question Delete Failed");
+            }
+            
+        }
     }
 }
