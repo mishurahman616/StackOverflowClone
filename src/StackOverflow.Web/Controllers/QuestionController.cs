@@ -3,9 +3,11 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StackOverflow.BL.DTOs;
+using StackOverflow.DAL.Entities;
 using StackOverflow.DAL.Enums;
 using StackOverflow.Web.Extensions;
 using StackOverflow.Web.Models;
+using StackOverflow.Web.Models.AnswerModels;
 using StackOverflow.Web.Models.QuestionModels;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -66,7 +68,7 @@ namespace StackOverflow.Web.Controllers
         }
 
         [AllowAnonymous]
-        public async Task<IActionResult> Details([FromRoute] Guid id)
+        public async Task<IActionResult> Details(Guid id)
         {
             var model = _scope.Resolve<QuestionDetailsModel>();
             await model.LoadQuestion(id);

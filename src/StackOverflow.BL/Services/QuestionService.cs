@@ -98,5 +98,12 @@ namespace StackOverflow.BL.Services
             }
             return VoteUpdateStatus.NoChange;
         }
+
+        public async Task AddAnswer(Answer answer)
+        {
+            await _unitOfWork.BeginTransaction();
+            await _unitOfWork.Answers.Create(answer);
+            await _unitOfWork.Commit();
+        }
     }
 }

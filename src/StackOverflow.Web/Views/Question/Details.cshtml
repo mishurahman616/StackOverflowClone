@@ -48,9 +48,6 @@
     <h4>Answers: <span class="answer-count"> (@Model.Question.Answers?.Count())</span></h4>
 </div>
 <div class="container question-list">
-    <div class="question-list-message">
-    </div>
-    <partial name="_ResponsePartial" />
     @if(Model.Question?.Answers?.Count()>0)
     @foreach (var answer in Model.Question.Answers)
     {
@@ -91,8 +88,10 @@
             <div class="mt-5">
                 <form asp-action="Create" asp-controller="Answer" asp-area="" method="post" asp-antiforgery="true">
                     <div class="mb-3">
+                        <input type="hidden" name="QuestionId" value="@Model.Question.Id" />
+                        <input type="hidden" name="UserId" value="@Model.Question.User.Id" />
                         <label for="Body" class="form-label fw-bolder">Your answer</label>
-                        <textarea class="form-control" for="Body" rows="4"></textarea>
+                        <textarea class="form-control" name="Body" for="Body" rows="4"></textarea>
                         <span for="Body" class="text-danger"></span>
                     </div>
                     <div class="mb-3 text-center">

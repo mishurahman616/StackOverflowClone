@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using StackOverflow.Web.Models;
+using StackOverflow.Web.Models.AnswerModels;
 using StackOverflow.Web.Models.QuestionModels;
 
 namespace StackOverflow.Web
@@ -22,6 +23,9 @@ namespace StackOverflow.Web
             builder.RegisterType<QuestionVoteModel>().AsSelf().InstancePerDependency();
             
             builder.RegisterType<QuestionDetailsModel>().AsSelf().InstancePerDependency();
+
+            //Answer
+            builder.RegisterType<AnswerCreateModel>().AsSelf().InstancePerDependency();
 
             base.Load(builder);
         }
