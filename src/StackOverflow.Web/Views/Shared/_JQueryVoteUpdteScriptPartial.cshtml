@@ -1,0 +1,118 @@
+﻿<script>
+    $(document).ready(function () {
+        let loginMessage = 'To vote, you need to <a href="/Account/Login" class="alert-link">login</a>.';
+
+        $(".up-vote").on("click", function (e) {
+            let id = $(this).data('id')
+            let isAnswer = $(this).data('answer');
+            $.ajax({
+                url: isAnswer === true ? '@Url.Action("UpdateVote", "Answer")' : '@Url.Action("UpdateVote", "Question")',
+                type: 'POST',
+                headers: {
+                    'RequestVerificationToken': $('input:hidden[name="__RequestVerificationToken"]').val()
+                },
+                data: {
+
+                    id: id,
+                    voteType: "UpVote"
+                },
+                success: function (response) {
+                    if (response === "NewVoteInserted") {
+                        incrementVoteCount(id);
+                        showVoteAlert("Vote Added", "success")
+                    }
+                    else if (response === "VoteUpdated") {
+                        incrementVoteCount(id);
+                        incrementVoteCount(id);
+                        showVoteAlert("Vote Updated", "success")
+                    }
+                    else if (response === "VoteRemoved") {
+                        decrementVoteCount(id);
+                        showVoteAlert("Vote Removed", "success")
+                    }
+                },
+                error: function (xhr, status, error) {
+                    if (xhr.status === 401) {
+                        // Unauthorized access
+                        showVoteAlert(loginMessage, "danger")
+                    }
+                    else {
+                        // Other error,
+                        console.error("Error: " + xhr.responseText);
+                    }
+                }
+            });
+        });
+
+
+        $(".down-vote").click(function (e) {
+            let id = $(this).data('id')
+            let isAnswer = $(this).data('answer');
+            $.ajax({
+                url: isAnswer === true ? '@Url.Action("UpdateVote", "Answer")' : '@Url.Action("UpdateVote", "Question")',
+                type: 'POST',
+                headers: {
+                    'RequestVerificationToken': $('input:hidden[name="__RequestVerificationToken"]').val()
+                },
+                data: {
+                    id: id,
+                    voteType: "DownVote"
+                },
+                success: function (response) {
+                    if (response === "NewVoteInserted") {
+                        decrementVoteCount(id);
+                        showVoteAlert("Vote Added", "success")
+                    }
+                    else if (response === "VoteUpdated") {
+                        decrementVoteCount(id);
+                        decrementVoteCount(id);
+                        showVoteAlert("Vote Updated", "success")
+                    }
+                    else if (response === "VoteRemoved") {
+                        incrementVoteCount(id);
+                        showVoteAlert("Vote Removed", "success")
+                    }
+                },
+                error: function (xhr, status, error) {
+                    if (xhr.status === 401) {
+                        // Unauthorized access
+                        showVoteAlert(loginMessage, "danger")
+                    }
+                    else {
+                        // Other error
+                        console.error("Error: " + xhr.responseText);
+                    }
+                }
+            });
+        });
+
+        function incrementVoteCount(id) {
+            let voteCountElement = $(".vote-count-" + id);
+            let currentCount = parseInt(voteCountElement.text());
+            voteCountElement.text(currentCount + 1);
+        }
+
+        function decrementVoteCount(id) {
+            let voteCountElement = $(".vote-count-" + id);
+            let currentCount = parseInt(voteCountElement.text());
+            voteCountElement.text(currentCount - 1);
+        }
+
+        function showVoteAlert(message, type) {
+            // Create a Bootstrap danger alert
+            var alertHtml = '<div class="alert alert-' + type + ' alert-dismissible fade show" role="alert">' +
+                message +
+                '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">';
+
+            // Append the alert to the body
+            $('.question-list-message').append(alertHtml);
+
+            setTimeout(function () {
+                $(".alert").fadeOut();
+            }, 2000);
+        }
+
+    });
+
+
+</script>
