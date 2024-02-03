@@ -24,10 +24,18 @@ namespace StackOverflow.Web.Models.AnswerModels
             _answerService = scope.Resolve<IAnswerService>();
         }
 
-        public async Task LoadAnswersByUser()
+        public async Task DeleteAnswerByUser(Guid userId, Guid answerId)
         {
-            throw new NotImplementedException();
-            //Questions = (List<Question>)await _answerService.GetAllQuestions();
+            var answer = await _answerService.GetAnswerById(answerId);
+            if(answer != null && answer.User.Id == userId)
+            {
+                await _answerService.DeleteAnswer(answer);
+            }
+            else
+            {
+                throw new Exception("Answer Delete Failed");
+            }
+
         }
     }
 }

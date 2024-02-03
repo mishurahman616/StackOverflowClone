@@ -21,6 +21,18 @@ namespace StackOverflow.BL.Services
             await _unitOfWork.Commit();
         }
 
+        public async Task<Answer> GetAnswerById(Guid id)
+        {
+            return await _unitOfWork.Answers.GetById(id);
+        }
+
+        public async Task DeleteAnswer(Answer answer)
+        {
+            await _unitOfWork.BeginTransaction();
+            await _unitOfWork.Answers.Delete(answer);
+            await _unitOfWork.Commit();
+        }
+
         public async Task<VoteUpdateStatus> UpdateAnswerVote(Guid answerId, Guid userId, VoteType voteType)
         {
             var user = await _unitOfWork.Users.GetById(userId);

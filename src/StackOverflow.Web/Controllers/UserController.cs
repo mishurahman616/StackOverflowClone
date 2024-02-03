@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using StackOverflow.DAL.Entities;
 using StackOverflow.Web.Extensions;
 using StackOverflow.Web.Models;
+using StackOverflow.Web.Models.AnswerModels;
 using StackOverflow.Web.Models.QuestionModels;
 
 namespace StackOverflow.Web.Controllers
@@ -64,6 +65,30 @@ namespace StackOverflow.Web.Controllers
             }
 
             return RedirectToAction("MyQuestion");
+        }
+
+        public async Task<IActionResult> DeleteAnswer(Guid id)
+        {
+            try
+            {
+                var model = _scope.Resolve<AnswerListModel>();
+                await model.DeleteAnswerByUser(Guid.Parse(User.Identity.GetUserId()), id);
+                TempData.Put<ResponseModel>("ResponseMessage", new ResponseModel
+                {
+                    Message = "Answer Deleted Successfully",
+                    Type = ResponseTypes.Success
+                });
+            }
+            catch (Exception ex)
+            {
+                TempData.Put<ResponseModel>("ResponseMessage", new ResponseModel
+                {
+                    Message = "Answer Delete Failed",
+                    Type = ResponseTypes.Danger
+                });
+            }
+
+            return RedirectToAction("MyAnswer");
         }
     }
 }

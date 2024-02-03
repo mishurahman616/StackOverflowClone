@@ -7,6 +7,8 @@ namespace StackOverflow.BL.Services
     public interface IAnswerService
     {
         Task AddAnswer(Answer answer);
+        Task<Answer> GetAnswerById(Guid id);
+        Task DeleteAnswer(Answer answer);
         Task<VoteUpdateStatus> UpdateAnswerVote(Guid answerId, Guid userId, VoteType voteType);
     }
 }
