@@ -60,6 +60,19 @@ namespace StackOverflow.BL.Services
             throw new NotImplementedException();
         }
 
+        public async Task UpdateQuestionByUser(Question questionToUpdate, Guid userId)
+        {
+            await _unitOfWork.BeginTransaction();
+            var user = await _unitOfWork.Users.GetById(userId);
+            var question = await _unitOfWork.Questions.GetById(questionToUpdate.Id);
+            if(question != null && user !=null && question.User.Id==userId)
+            {
+                question.Title = questionToUpdate.Title;
+                question.Body = questionToUpdate.Body;
+               await _unitOfWork.Questions.Update(question);
+            }
+            await _unitOfWork.Commit();
+        }
         public async Task<VoteUpdateStatus> UpdateQuestionVote(Guid questionId, Guid userId, VoteType voteType)
         {
             var user = await _unitOfWork.Users.GetById(userId);

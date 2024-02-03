@@ -6,6 +6,7 @@ using StackOverflow.DAL.Enums;
 using StackOverflow.Web.Extensions;
 using StackOverflow.Web.Models;
 using StackOverflow.Web.Models.QuestionModels;
+using System.Reflection;
 
 namespace StackOverflow.Web.Controllers
 {
@@ -57,9 +58,55 @@ namespace StackOverflow.Web.Controllers
             }
         }
 
-        public IActionResult Edit()
+        public async Task<IActionResult> Edit(Guid id)
         {
-            return View();
+            try
+            {
+                var model = _scope.Resolve<QuestionUpdateModel>();
+                var userId = Guid.Parse(User.Identity.GetUserId());
+                await model.LoadQuestion(id, userId);
+
+                return View(model);
+            }
+            catch(Exception ex)
+            {
+                TempData.Put<ResponseModel>("ResponseMessage", new ResponseModel
+                {
+                    Message = "You do not have permission",
+                    Type = ResponseTypes.Danger
+                });
+                return View();
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(QuestionUpdateModel model)
+        {
+            if(ModelState.IsValid)
+            {
+                try
+                {
+                    model.ResolveDependency(_scope);
+                    var userId = Guid.Parse(User.Identity.GetUserId());
+                    await model.UpdateQuestion(userId);
+                    TempData.Put<ResponseModel>("ResponseMessage", new ResponseModel
+                    {
+                        Message = "Question Update Successfully",
+                        Type = ResponseTypes.Success
+                    });
+                    return View(model);
+                }
+                catch (Exception ex)
+                {
+                    TempData.Put<ResponseModel>("ResponseMessage", new ResponseModel
+                    {
+                        Message = "Question Update Failed",
+                        Type = ResponseTypes.Danger
+                    });
+                    return View(model);
+                }
+            }
+            return View(model);
         }
 
         [AllowAnonymous]

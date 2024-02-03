@@ -20,6 +20,8 @@ namespace StackOverflow.Web
             //Question 
             builder.RegisterType<QuestionCreateModel>().AsSelf().InstancePerDependency();
 
+            builder.RegisterType<QuestionUpdateModel>().AsSelf().InstancePerDependency();
+
             builder.RegisterType<QuestionListModel>().AsSelf().InstancePerDependency();
 
             builder.RegisterType<QuestionVoteModel>().AsSelf().InstancePerDependency();

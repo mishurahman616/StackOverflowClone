@@ -9,6 +9,7 @@ namespace StackOverflow.BL.Services
     {
         Task CreateQuestion(Question question);
         Task UpdateQuestion(Question question);
+        Task UpdateQuestionByUser(Question questionToUpdate, Guid userId);
         Task DeleteQuestion(Question question);
         Task<Question> GetQuestionById(Guid qestionId);
         Task<IList<Question>> GetQuestionsByUserId(Guid userId);
