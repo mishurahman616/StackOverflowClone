@@ -5,6 +5,7 @@
         $(".up-vote").on("click", function (e) {
             let id = $(this).data('id')
             let isAnswer = $(this).data('answer');
+            let myVote = $('.my-vote-' + id);
             $.ajax({
                 url: isAnswer === true ? '@Url.Action("UpdateVote", "Answer")' : '@Url.Action("UpdateVote", "Question")',
                 type: 'POST',
@@ -20,15 +21,21 @@
                     if (response === "NewVoteInserted") {
                         incrementVoteCount(id);
                         showVoteAlert("Vote Added", "success")
+                        //Update my vote
+                        myVote.text('(My vote: 1)');
                     }
                     else if (response === "VoteUpdated") {
                         incrementVoteCount(id);
                         incrementVoteCount(id);
                         showVoteAlert("Vote Updated", "success")
+                        //Update my vote
+                        myVote.text('(My vote: 1)');
                     }
                     else if (response === "VoteRemoved") {
                         decrementVoteCount(id);
                         showVoteAlert("Vote Removed", "success")
+                        //Update my vote
+                        myVote.text('');
                     }
                 },
                 error: function (xhr, status, error) {
@@ -48,6 +55,7 @@
         $(".down-vote").click(function (e) {
             let id = $(this).data('id')
             let isAnswer = $(this).data('answer');
+            let myVote = $('.my-vote-' + id);
             $.ajax({
                 url: isAnswer === true ? '@Url.Action("UpdateVote", "Answer")' : '@Url.Action("UpdateVote", "Question")',
                 type: 'POST',
@@ -62,15 +70,21 @@
                     if (response === "NewVoteInserted") {
                         decrementVoteCount(id);
                         showVoteAlert("Vote Added", "success")
+                        //Update my vote
+                        myVote.text('(My vote: -1)');
                     }
                     else if (response === "VoteUpdated") {
                         decrementVoteCount(id);
                         decrementVoteCount(id);
                         showVoteAlert("Vote Updated", "success")
+                        //Update my vote
+                        myVote.text('(My vote: -1)');
                     }
                     else if (response === "VoteRemoved") {
                         incrementVoteCount(id);
                         showVoteAlert("Vote Removed", "success")
+                        //Update my vote
+                        myVote.text('');
                     }
                 },
                 error: function (xhr, status, error) {

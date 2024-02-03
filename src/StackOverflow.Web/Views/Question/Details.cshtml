@@ -35,6 +35,18 @@
                 <div class="card-footer d-flex justify-content-between">
                     <div class="mr-3">
                         Votes: <span class="vote-count-@Model.Question.Id.ToString("N")">@Model.Question.Votes?.Sum(vote => (int)vote.VoteType)</span>
+                        @if (User.Identity?.Name != null)
+                        {
+                            int myVote = (int?)Model.Question.Votes?.Where(x => x.User.UserName == User.Identity?.Name).FirstOrDefault()?.VoteType ?? 0;
+                            <span class="ml-3">
+                                <span title="My Vote" class="my-vote-@Model.Question.Id.ToString("N")">
+                                    @if (myVote != 0)
+                                    {
+                                        <span>(My Vote: @myVote)</span>
+                                    }
+                                </span>
+                            </span>
+                        }
                     </div>
                     <div>
                         Asked By: @(Model.Question.User != null ? Model.Question.User.FirstName : "")
@@ -58,10 +70,10 @@
                         <div class="col-1">
 
                             <div>
-                                    <a class="up-vote" data-answer="true" data-id="@answer.Id.ToString("N")"><i class=" fa fa-caret-up fa-2x"></i></a>
+                                <a class="up-vote" data-answer="true" data-id="@answer.Id.ToString("N")"><i class=" fa fa-caret-up fa-2x"></i></a>
                             </div>
                             <div>
-                                    <a class="down-vote" data-answer="true" data-id="@answer.Id.ToString("N")"><i class="fa fa-caret-down fa-2x"></i></a>
+                                <a class="down-vote" data-answer="true" data-id="@answer.Id.ToString("N")"><i class="fa fa-caret-down fa-2x"></i></a>
                             </div>
                         </div>
 
@@ -72,7 +84,19 @@
                     <div class="card-footer d-flex justify-content-between bg-white">
                         <div class="mr-3">
                                 Votes: <span class="vote-count-@answer.Id.ToString("N")">@answer.Votes?.Sum(vote => (int)vote.VoteType)</span>
-                        </div>
+                                @if (User.Identity?.Name != null)
+                                {
+                                    int myVote = (int?)answer.Votes?.Where(x => x.User.UserName == User.Identity?.Name).FirstOrDefault()?.VoteType ?? 0;
+                                    <span class="ml-3">
+                                        <span title="My Vote" class="my-vote-@answer.Id.ToString("N")">
+                                            @if (myVote != 0)
+                                            {
+                                                <span>(My Vote: @myVote)</span>
+                                            }
+                                        </span>
+                                    </span>
+                                }
+                            </div>
                         <div>
                                 Answered By: @(answer.User != null ? answer.User.FirstName : "")
                         </div>

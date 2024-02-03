@@ -7,6 +7,8 @@
 @if (Model.Questions?.Count > 0)
 {
 <div class="container-fluid">
+        <div class="question-list-message">
+        </div>
         <h4>My Questions</h4>
     @foreach (var question in Model.Questions)
     {
@@ -39,6 +41,18 @@
                     <div class="card-footer d-flex justify-content-between">
                         <div class="mr-3">
                             Votes: <span class="vote-count-@question.Id.ToString("N")">@question.Votes?.Sum(vote => (int)vote.VoteType)</span>
+                                @if (User.Identity?.Name != null)
+                                {
+                                    int myVote = (int?)question.Votes?.Where(x => x.User.UserName == User.Identity?.Name).FirstOrDefault()?.VoteType ?? 0;
+                                    <span class="ml-3">
+                                        <span title="My Vote" class="my-vote-@question.Id.ToString("N")">
+                                            @if (myVote != 0)
+                                            {
+                                                <span>(My Vote: @myVote)</span>
+                                            }
+                                        </span>
+                                    </span>
+                                }
                         </div>
                         <div class="mr-3">
                             Answers: @question.Answers?.Count()
