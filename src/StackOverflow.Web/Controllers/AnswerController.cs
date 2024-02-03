@@ -6,7 +6,6 @@ using StackOverflow.DAL.Enums;
 using StackOverflow.Web.Extensions;
 using StackOverflow.Web.Models;
 using StackOverflow.Web.Models.AnswerModels;
-using StackOverflow.Web.Models.QuestionModels;
 
 namespace StackOverflow.Web.Controllers
 {
@@ -51,6 +50,57 @@ namespace StackOverflow.Web.Controllers
                 });
             }
             return RedirectToAction("Details", "Question", new { id = model.QuestionId });
+        }
+
+        public async Task<IActionResult> Edit(Guid id)
+        {
+            try
+            {
+                var model = _scope.Resolve<AnswerUpdateModel>();
+                var userId = Guid.Parse(User.Identity.GetUserId());
+                await model.LoadAnswer(id, userId);
+
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                TempData.Put<ResponseModel>("ResponseMessage", new ResponseModel
+                {
+                    Message = "You do not have permission",
+                    Type = ResponseTypes.Danger
+                });
+                return View();
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(AnswerUpdateModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    model.ResolveDependency(_scope);
+                    var userId = Guid.Parse(User.Identity.GetUserId());
+                    await model.UpdateAnswer(userId);
+                    TempData.Put<ResponseModel>("ResponseMessage", new ResponseModel
+                    {
+                        Message = "Answer Update Successfully",
+                        Type = ResponseTypes.Success
+                    });
+                    return View(model);
+                }
+                catch (Exception ex)
+                {
+                    TempData.Put<ResponseModel>("ResponseMessage", new ResponseModel
+                    {
+                        Message = "Answer Update Failed",
+                        Type = ResponseTypes.Danger
+                    });
+                    return View(model);
+                }
+            }
+            return View(model);
         }
 
         [ValidateAntiForgeryToken]

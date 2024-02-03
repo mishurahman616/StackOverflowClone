@@ -27,7 +27,7 @@
                             <div class="col-11">
                                 <p>@answer.Body</p>
                                 <div class="d-flex justify-content-end">
-                                    <a class="me-2" asp-route-id="@answer.Id.ToString("N")" asp-action="Edit" asp-controller="Question">Edit</a>
+                                    <a class="me-2" asp-route-id="@answer.Id.ToString("N")" asp-action="Edit" asp-controller="Answer">Edit</a>
                                     <a id="deleteButton" href="" data-id="@answer.Id.ToString("N")" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</a>
                                     <partial name="_DeleteModalPartial" />
                                 </div>

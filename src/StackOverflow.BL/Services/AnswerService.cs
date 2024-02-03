@@ -20,6 +20,18 @@ namespace StackOverflow.BL.Services
             await _unitOfWork.Answers.Create(answer);
             await _unitOfWork.Commit();
         }
+        public async Task UpdateAnswerByUser(Answer answerToUpdate, Guid userId)
+        {
+            await _unitOfWork.BeginTransaction();
+            var answer =await _unitOfWork.Answers.GetById(answerToUpdate.Id);
+            if(answer!=null && answer.User.Id == userId)
+            {
+                answer.Body=answerToUpdate.Body;
+                await _unitOfWork.Answers.Update(answer);
+            }
+            
+            await _unitOfWork.Commit();
+        }
 
         public async Task<Answer> GetAnswerById(Guid id)
         {

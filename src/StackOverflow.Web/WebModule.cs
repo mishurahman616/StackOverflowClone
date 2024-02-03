@@ -30,6 +30,8 @@ namespace StackOverflow.Web
 
             //Answer
             builder.RegisterType<AnswerCreateModel>().AsSelf().InstancePerDependency();
+
+            builder.RegisterType<AnswerUpdateModel>().AsSelf().InstancePerDependency();
             
             builder.RegisterType<AnswerVoteModel>().AsSelf().InstancePerDependency();
    

@@ -1,0 +1,27 @@
+﻿@{
+    @using StackOverflow.Web.Models.AnswerModels;
+    @model AnswerUpdateModel
+    ViewData["Title"] = "Update Answer";
+}
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <partial name="_ResponsePartial" />
+        <div class="col">
+            <div class="p-5">
+                <h2 class="text-center">Update Answer</h2>
+                <form asp-action="Edit" asp-controller="Answer" asp-area="" method="post" asp-antiforgery="true">
+                    <input type="hidden" asp-for="Id" />
+                    <div class="mb-3">
+                        <label asp-for="Body" class="form-label fw-bolder">Description</label>
+                        <textarea class="form-control" asp-for="Body" rows="4"></textarea>
+                        <span asp-validation-for="Body" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3 text-center">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
