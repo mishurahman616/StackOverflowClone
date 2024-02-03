@@ -3,11 +3,12 @@
 @{
     ViewData["Title"] = "My Voted Question";
 }
+<partial name="_ResponsePartial" />
 @if (Model.QuestionVotes?.Count > 0)
 {
     <div class="container-fluid">
         <h4>My Voted Questions</h4>
-        <partial name="_ResponsePartial" />
+
         @foreach (var questionVote in Model.QuestionVotes)
         {
             var question = questionVote.Question;

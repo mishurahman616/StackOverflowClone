@@ -3,11 +3,11 @@
 @{
     ViewData["Title"] = "My Question";
 }
+<partial name="_ResponsePartial" />
 @if (Model.Questions?.Count > 0)
 {
 <div class="container-fluid">
         <h4>My Questions</h4>
-    <partial name="_ResponsePartial" />
     @foreach (var question in Model.Questions)
     {
         <div class="row my-3">
@@ -31,7 +31,8 @@
                             <p>@question.Body</p>
                             <div class="d-flex justify-content-end">
                                 <a class="me-2" asp-route-id="@question.Id.ToString("N")" asp-action="Edit" asp-controller="Question">Edit</a>
-                                    <a asp-route-id="@question.Id.ToString("N")" asp-action="DeleteQuestion" asp-controller="User">Delete</a>
+                                <a id="deleteButton" href="" data-id="@question.Id.ToString("N")" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</a>
+                                <partial name="_DeleteModalPartial" />
                             </div>
                         </div>
                     </div>
@@ -53,6 +54,20 @@
     </div>
 @section Scripts {
     <partial name="_JQueryVoteUpdteScriptPartial" />
+    <script>
+        $(document).ready(function () {
+            $('#deleteButton').click(function () {
+                let id = $(this).data('id');
+                $('#deleteId').val(id);
+                $('#deleteForm').attr('action', '/User/DeleteQuestion');
+            });
+            $('#deleteConfirmButton').click(function () {
+                $('#deleteForm').submit();
+            })
+        });
+    </script>
+    
+        
     }
 }
 else
