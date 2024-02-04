@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using StackOverflow.BL.Exceptions;
 using StackOverflow.BL.Services;
 using StackOverflow.DAL.Entities;
 
@@ -26,14 +27,15 @@ namespace StackOverflow.Web.Models.AnswerModels
 
         public async Task DeleteAnswerByUser(Guid userId, Guid answerId)
         {
-            var answer = await _answerService.GetAnswerById(answerId);
-            if(answer != null && answer.User.Id == userId)
+            var answer = await _answerService.GetAnswerById(answerId) ?? throw new NotFoundException("Answer Not Found");
+
+            if(answer.User.Id == userId)
             {
                 await _answerService.DeleteAnswer(answer);
             }
             else
             {
-                throw new Exception("Answer Delete Failed");
+                throw new PermissionMissingException("You do not have permission to delete this answer");
             }
 
         }

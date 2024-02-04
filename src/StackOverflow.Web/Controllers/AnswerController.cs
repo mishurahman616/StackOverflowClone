@@ -2,6 +2,7 @@
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using StackOverflow.BL.Exceptions;
 using StackOverflow.DAL.Enums;
 using StackOverflow.Web.Extensions;
 using StackOverflow.Web.Models;
@@ -101,6 +102,39 @@ namespace StackOverflow.Web.Controllers
                 }
             }
             return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            try
+            {
+                var model = _scope.Resolve<AnswerListModel>();
+                await model.DeleteAnswerByUser(Guid.Parse(User.Identity.GetUserId()), id);
+                TempData.Put<ResponseModel>("ResponseMessage", new ResponseModel
+                {
+                    Message = "Answer Deleted Successfully",
+                    Type = ResponseTypes.Success
+                });
+            }
+            catch (Exception ex) when (ex is NotFoundException || ex is PermissionMissingException)
+            {
+                TempData.Put<ResponseModel>("ResponseMessage", new ResponseModel
+                {
+                    Message = ex.Message,
+                    Type = ResponseTypes.Danger
+                });
+            } catch (Exception ex)
+            {
+                _logger.LogError(ex.ToString(), ex);
+                TempData.Put<ResponseModel>("ResponseMessage", new ResponseModel
+                {
+                    Message = "Answer Delete Failed",
+                    Type = ResponseTypes.Danger
+                });
+            }
+
+            return RedirectToAction("MyAnswer", "User");
         }
 
         [ValidateAntiForgeryToken]

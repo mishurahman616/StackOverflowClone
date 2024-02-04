@@ -69,7 +69,8 @@
             $('#deleteButton').click(function () {
                 let id = $(this).data('id');
                 $('#deleteId').val(id);
-                $('#deleteForm').attr('action', '/User/DeleteAnswer');
+                $('#deleteForm').attr('action', '/Answer/Delete');
+                $('#deleteForm').attr('method', 'post');
             });
             $('#deleteConfirmButton').click(function () {
                 $('#deleteForm').submit();
