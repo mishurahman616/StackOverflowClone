@@ -7,7 +7,6 @@ using StackOverflow.DAL.Enums;
 using StackOverflow.Web.Extensions;
 using StackOverflow.Web.Models;
 using StackOverflow.Web.Models.QuestionModels;
-using System.Reflection;
 
 namespace StackOverflow.Web.Controllers
 {
@@ -151,6 +150,40 @@ namespace StackOverflow.Web.Controllers
                 }
             }
             return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            try
+            {
+                var model = _scope.Resolve<QuestionListModel>();
+                await model.DeleteQuestionByUser(Guid.Parse(User.Identity.GetUserId()), id);
+                TempData.Put<ResponseModel>("ResponseMessage", new ResponseModel
+                {
+                    Message = "Question Deleted Successfully",
+                    Type = ResponseTypes.Success
+                });
+            }
+            catch (Exception ex) when (ex is NotFoundException || ex is PermissionMissingException)
+            {
+                TempData.Put<ResponseModel>("ResponseMessage", new ResponseModel
+                {
+                    Message = ex.Message,
+                    Type = ResponseTypes.Danger
+                });
+
+            }catch(Exception ex)
+            {
+                _logger.LogError(ex.Message.ToString(), ex);
+                TempData.Put<ResponseModel>("ResponseMessage", new ResponseModel
+                {
+                    Message = "Question Delete Failed",
+                    Type = ResponseTypes.Danger
+                });
+            }
+
+            return RedirectToAction("MyQuestion", "User");
         }
 
         [AllowAnonymous]

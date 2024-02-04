@@ -44,29 +44,7 @@ namespace StackOverflow.Web.Controllers
             var user = await model.GetUserById(Guid.Parse(User.Identity.GetUserId()));
             return View(user);
         }
-        public async Task<IActionResult> DeleteQuestion(Guid id)
-        {
-            try
-            {
-                var model = _scope.Resolve<QuestionListModel>();
-                await model.DeleteQuestionByUser(Guid.Parse(User.Identity.GetUserId()), id);
-                TempData.Put<ResponseModel>("ResponseMessage", new ResponseModel
-                {
-                    Message = "Question Deleted Successfully",
-                    Type = ResponseTypes.Success
-                });
-            }catch (Exception ex)
-            {
-                TempData.Put<ResponseModel>("ResponseMessage", new ResponseModel
-                {
-                    Message = "Question Delete Failed",
-                    Type = ResponseTypes.Danger
-                });
-            }
-
-            return RedirectToAction("MyQuestion");
-        }
-
+ 
         public async Task<IActionResult> DeleteAnswer(Guid id)
         {
             try
