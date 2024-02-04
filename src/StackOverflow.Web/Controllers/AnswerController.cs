@@ -44,9 +44,11 @@ namespace StackOverflow.Web.Controllers
             }
             else
             {
+                string errorMessage = ModelState.SelectMany(x => x.Value.Errors).First().ErrorMessage;
+
                 TempData.Put<ResponseModel>("ResponseMessage", new ResponseModel
                 {
-                    Message = "Answer is Invalid",
+                    Message = errorMessage,
                     Type = ResponseTypes.Danger,
                 });
             }
@@ -63,15 +65,34 @@ namespace StackOverflow.Web.Controllers
 
                 return View(model);
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is NotFoundException || ex is PermissionMissingException)
             {
                 TempData.Put<ResponseModel>("ResponseMessage", new ResponseModel
                 {
-                    Message = "You do not have permission",
+                    Message = ex.Message,
                     Type = ResponseTypes.Danger
                 });
-                return View();
             }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message.ToString(), ex);
+
+                TempData.Put<ResponseModel>("ResponseMessage", new ResponseModel
+                {
+                    Message = "Somthing went wrong",
+                    Type = ResponseTypes.Danger
+                });
+            }
+            // Get the referrer URL from the HttpContext
+            string referrerUrl = HttpContext.Request.Headers["Referer"];
+
+            // Check if the referrer URL is not null or empty
+            if (!string.IsNullOrEmpty(referrerUrl))
+            {
+                // Redirect the user back to the referrer URL
+                return Redirect(referrerUrl);
+            }
+            return View();
         }
 
         [HttpPost]
@@ -89,16 +110,24 @@ namespace StackOverflow.Web.Controllers
                         Message = "Answer Update Successfully",
                         Type = ResponseTypes.Success
                     });
-                    return View(model);
+                }
+                catch (Exception ex)when (ex is NotFoundException || ex is PermissionMissingException)
+                {
+                    TempData.Put<ResponseModel>("ResponseMessage", new ResponseModel
+                    {
+                        Message = ex.Message,
+                        Type = ResponseTypes.Danger
+                    });
                 }
                 catch (Exception ex)
                 {
+                    _logger.LogError(ex.Message.ToString(), ex);
+
                     TempData.Put<ResponseModel>("ResponseMessage", new ResponseModel
                     {
                         Message = "Answer Update Failed",
                         Type = ResponseTypes.Danger
                     });
-                    return View(model);
                 }
             }
             return View(model);

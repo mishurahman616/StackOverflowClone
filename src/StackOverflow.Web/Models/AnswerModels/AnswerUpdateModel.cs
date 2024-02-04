@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using StackOverflow.BL.Exceptions;
 using StackOverflow.BL.Services;
 using StackOverflow.DAL.Entities;
 using System.ComponentModel.DataAnnotations;
@@ -39,11 +40,16 @@ namespace StackOverflow.Web.Models.AnswerModels
 
         public async Task LoadAnswer(Guid id, Guid userId)
         {
-            var answer = await _answerService.GetAnswerById(id);
-            if (answer != null && answer.User.Id == userId)
+            var answer = await _answerService.GetAnswerById(id) ?? throw new NotFoundException("Answer not found");
+
+            if (answer.User.Id == userId)
             {
                 Id = answer.Id;
                 Body = answer.Body;
+            }
+            else
+            {
+                throw new PermissionMissingException("You do not have permission to edit this answer");
             }
         }
 

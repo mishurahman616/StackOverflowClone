@@ -1,4 +1,5 @@
 ﻿using StackOverflow.BL.DTOs;
+using StackOverflow.BL.Exceptions;
 using StackOverflow.DAL.Entities;
 using StackOverflow.DAL.Enums;
 using StackOverflow.DAL.UnitOfWorks;
@@ -23,14 +24,19 @@ namespace StackOverflow.BL.Services
         public async Task UpdateAnswerByUser(Answer answerToUpdate, Guid userId)
         {
             await _unitOfWork.BeginTransaction();
-            var answer =await _unitOfWork.Answers.GetById(answerToUpdate.Id);
-            if(answer!=null && answer.User.Id == userId)
+            var answer = await _unitOfWork.Answers.GetById(answerToUpdate.Id) ?? throw new NotFoundException("Answer not found");
+            if(answer.User.Id == userId)
             {
                 answer.Body=answerToUpdate.Body;
                 await _unitOfWork.Answers.Update(answer);
+                await _unitOfWork.Commit();
+            }
+            else
+            {
+                throw new PermissionMissingException("You do not have permission to edit this answer");
             }
             
-            await _unitOfWork.Commit();
+
         }
 
         public async Task<Answer> GetAnswerById(Guid id)
