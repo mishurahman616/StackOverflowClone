@@ -29,6 +29,7 @@
                     <div class="col-11">
                         <b>@Model.Question.Title</b>
                         <p>@Model.Question.Body</p>
+                        <div class="d-flex justify-content-end"><a class="btn btn-info" href="#addAnswer">Give Answer</a></div>
                     </div>
                 </div>
                 <div class="card-footer d-flex justify-content-between">
@@ -109,7 +110,7 @@
     <div class="row justify-content-center">
         <div class="col">
             <div class="mt-5">
-                <form asp-action="Create" asp-controller="Answer" asp-area="" method="post" asp-antiforgery="true">
+                <form id="addAnswer" asp-action="Create" asp-controller="Answer" asp-area="" method="post" asp-antiforgery="true">
                     <div class="mb-3">
                         <input type="hidden" name="QuestionId" value="@Model.Question.Id" />
                         <input type="hidden" name="UserId" value="@Model.Question.User.Id" />
