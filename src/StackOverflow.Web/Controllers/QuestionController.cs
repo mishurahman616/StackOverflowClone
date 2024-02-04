@@ -38,24 +38,27 @@ namespace StackOverflow.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(QuestionCreateModel model)
         {
-            try
+            if (ModelState.IsValid)
             {
-                model.ResolveDependency(_scope);
-                var userId = User.Identity.GetUserId();
-                model.UserId = Guid.Parse(userId);
-                await model.CreateQuestion();
-                TempData.Put<ResponseModel>("ResponseMessage", new ResponseModel
+                try
                 {
-                    Message = "Question Create Successfully",
-                    Type = ResponseTypes.Success
-                });
-                _logger.LogInformation("Question Created By " + userId);
-                return View(model);
-            }catch (Exception ex)
-            {
-                _logger.LogError(ex, ex.Message);
-                return View(model);
+                    model.ResolveDependency(_scope);
+                    var userId = User.Identity.GetUserId();
+                    model.UserId = Guid.Parse(userId);
+                    await model.CreateQuestion();
+                    TempData.Put<ResponseModel>("ResponseMessage", new ResponseModel
+                    {
+                        Message = "Question Create Successfully",
+                        Type = ResponseTypes.Success
+                    });
+                    _logger.LogInformation("Question Created By " + userId);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, ex.Message);
+                }
             }
+            return View(model);
         }
 
         public async Task<IActionResult> Edit(Guid id)

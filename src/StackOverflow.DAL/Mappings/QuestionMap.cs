@@ -22,7 +22,7 @@ namespace StackOverflow.DAL.Mappings
 
             Property(x => x.Body, map =>
             {
-                map.Length(1000);
+                map.Length(2000);
             });
 
             Bag(x => x.Answers, map =>

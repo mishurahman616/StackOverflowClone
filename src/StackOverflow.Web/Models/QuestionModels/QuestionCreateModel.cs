@@ -15,8 +15,8 @@ namespace StackOverflow.Web.Models.QuestionModels
         [MaxLength(100, ErrorMessage = "{0} should have atmost {1} character")]
         public string Title { get; set; }
         [Required]
-        [MinLength(220, ErrorMessage = "{0} should be atleast {1} character long")]
-        [MaxLength(1000, ErrorMessage = "{0} should have atmost {1} character")]
+        [MinLength(100, ErrorMessage = "{0} should be atleast {1} character long")]
+        [MaxLength(2000, ErrorMessage = "{0} should have atmost {1} character")]
         public string Body { get; set; }
 
         public Guid UserId { get; set; }
