@@ -28,10 +28,14 @@
 
                             <div class="col-11">
                                 <p>@answer.Body</p>
-                                <div class="d-flex justify-content-end">
-                                    <a class="me-2" asp-route-id="@answer.Id.ToString("N")" asp-action="Edit" asp-controller="Question">Edit</a>
-                                    <a asp-route-id="@answer.Id.ToString("N")" asp-action="Delete" asp-controller="Answer">Delete</a>
-                                </div>
+                                @if (answer.User.UserName == User.Identity?.Name)
+                                {
+                                    <div class="d-flex justify-content-end">
+                                        <a class="me-2" asp-route-id="@answer.Id.ToString("N")" asp-action="Edit" asp-controller="Question">Edit</a>
+                                        <a id="deleteButton" href="" data-id="@answer.Id.ToString("N")" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</a>
+                                        <partial name="_DeleteModalPartial" />
+                                    </div>
+                                }
                             </div>
                         </div>
                         <div class="card-footer d-flex justify-content-between">
@@ -54,7 +58,7 @@
                                 <a asp-route-id="@answer.Question.Id.ToString("N")" asp-action="Details" asp-controller="Question">See Question</a>
                             </div>
                             <div>
-                                Asked By: @(answer.User != null ? answer.User.FirstName : "")
+                                Answered By: @(answer.User != null ? answer.User.FirstName : "")
                             </div>
                         </div>
                     </div>

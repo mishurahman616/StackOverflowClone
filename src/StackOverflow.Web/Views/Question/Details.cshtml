@@ -15,15 +15,14 @@
     <partial name="_ResponsePartial" />
         <div class="row my-3">
         <div class="col">
-            <div class="card">
+            <div class="card  bg-light">
                 <div class="card-body d-flex">
                     <div class="col-1">
-
                         <div>
-                            <a class="up-vote" data-id="@Model.Question.Id.ToString("N")"><i class=" fa fa-caret-up fa-2x"></i></a>
+                            <a class="up-vote" title="Give a positive vote" data-id="@Model.Question.Id.ToString("N")"><i class=" fa fa-caret-up fa-2x"></i></a>
                         </div>
                         <div>
-                            <a class="down-vote" data-id="@Model.Question.Id.ToString("N")"><i class="fa fa-caret-down fa-2x"></i></a>
+                            <a class="down-vote" title="Give a negative vote" data-id="@Model.Question.Id.ToString("N")"><i class="fa fa-caret-down fa-2x"></i></a>
                         </div>
                     </div>
 
@@ -34,7 +33,7 @@
                 </div>
                 <div class="card-footer d-flex justify-content-between">
                     <div class="mr-3">
-                        Votes: <span class="vote-count-@Model.Question.Id.ToString("N")">@Model.Question.Votes?.Sum(vote => (int)vote.VoteType)</span>
+                        Votes: <span class="vote-count-@Model.Question.Id.ToString("N")">@Model.Question.Votes?.Sum(vote => (int)vote.VoteType) </span>
                         @if (User.Identity?.Name != null)
                         {
                             int myVote = (int?)Model.Question.Votes?.Where(x => x.User.UserName == User.Identity?.Name).FirstOrDefault()?.VoteType ?? 0;

@@ -33,33 +33,39 @@
                                     <a class="text-decoration-none" asp-action="Details" asp-route-id="@question.Id.ToString("N")" asp-controller="Question">@question.Title</a>
                                 </b>
                                 <p>@question.Body</p>
-                                <div class="d-flex justify-content-end">
-                                    <a class="me-2" asp-route-id="@question.Id.ToString("N")" asp-action="Edit" asp-controller="Question">Edit</a>
-                                    <a asp-route-id="@question.Id.ToString("N")" asp-action="Delete" asp-controller="Question">Delete</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-footer d-flex justify-content-between">
-                            <div class="mr-3">
-                                Votes: <span class="vote-count-@question.Id.ToString("N")">@question.Votes?.Sum(vote => (int)vote.VoteType)</span>
-                                @if (User.Identity?.Name != null)
+                                @if(question.User.UserName == User.Identity?.Name)
                                 {
-                                    int myVote = (int?)question.Votes?.Where(x => x.User.UserName == User.Identity?.Name).FirstOrDefault()?.VoteType ?? 0;
-                                    <span class="ml-3">
-                                        <span title="My Vote" class="my-vote-@question.Id.ToString("N")">
-                                            @if (myVote != 0)
-                                            {
-                                                <span>(My Vote: @myVote)</span>
-                                            }
-                                        </span>
-                                    </span>
+                                    <div class="d-flex justify-content-end">
+                                        <a class="me-2" asp-route-id="@question.Id.ToString("N")" asp-action="Edit" asp-controller="Question">Edit</a>
+                                        <a id="deleteButton" href="" data-id="@question.Id.ToString("N")" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</a>
+                                        <partial name="_DeleteModalPartial" />
+                                    </div>
                                 }
                             </div>
-                            <div class="mr-3">
-                                Answers: @question.Answers?.Count()
-                            </div>
-                            <div>
-                                Asked By: @(question.User != null ? question.User.FirstName : "")
+                        </div>
+                        <div class="card-footer ">
+                            <div class="row">
+                                <div class="col-4 d-flex justify-content-start">
+                                    Votes: <span class="vote-count-@question.Id.ToString("N")">@question.Votes?.Sum(vote => (int)vote.VoteType)</span>
+                                    @if (User.Identity?.Name != null)
+                                    {
+                                        int myVote = (int?)question.Votes?.Where(x => x.User.UserName == User.Identity?.Name).FirstOrDefault()?.VoteType ?? 0;
+                                        <span>
+                                            <span title="My Vote" class="my-vote-@question.Id.ToString("N")">
+                                                @if (myVote != 0)
+                                                {
+                                                    <span> (My Vote: @myVote)</span>
+                                                }
+                                            </span>
+                                        </span>
+                                    }
+                                </div>
+                                <div class="col-4 d-flex justify-content-center">
+                                    <a class="text-decoration-none" asp-action="Details" asp-route-id="@question.Id.ToString("N")" asp-controller="Question"><i title="Answer" class="fa-regular fa-message"></i> @question.Answers?.Count()</a>
+                                </div>
+                                <div class="col-4 d-flex justify-content-end">
+                                    Asked By: @(question.User != null ? question.User.FirstName : "")
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -69,6 +75,20 @@
     </div>
     @section Scripts {
     <partial name="_JQueryVoteUpdteScriptPartial" />
+
+    <script>
+        $(document).ready(function () {
+            $('#deleteButton').click(function () {
+                let id = $(this).data('id');
+                $('#deleteId').val(id);
+                $('#deleteForm').attr('action', '/Question/Delete');
+                $('#deleteForm').attr('method', 'post');
+            });
+            $('#deleteConfirmButton').click(function () {
+                $('#deleteForm').submit();
+            })
+        });
+    </script>
     }
 }
 else

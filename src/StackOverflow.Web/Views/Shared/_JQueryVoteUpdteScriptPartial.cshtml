@@ -22,14 +22,14 @@
                         incrementVoteCount(id);
                         showVoteAlert("Vote Added", "success")
                         //Update my vote
-                        myVote.text('(My vote: 1)');
+                        myVote.text(' (My vote: 1)');
                     }
                     else if (response.message === "VoteUpdated") {
                         incrementVoteCount(id);
                         incrementVoteCount(id);
                         showVoteAlert("Vote Updated", "success")
                         //Update my vote
-                        myVote.text('(My vote: 1)');
+                        myVote.text(' (My vote: 1)');
                     }
                     else if (response.message === "VoteRemoved") {
                         decrementVoteCount(id);
@@ -71,14 +71,14 @@
                         decrementVoteCount(id);
                         showVoteAlert("Vote Added", "success")
                         //Update my vote
-                        myVote.text('(My vote: -1)');
+                        myVote.text(' (My vote: -1)');
                     }
                     else if (response.message === "VoteUpdated") {
                         decrementVoteCount(id);
                         decrementVoteCount(id);
                         showVoteAlert("Vote Updated", "success")
                         //Update my vote
-                        myVote.text('(My vote: -1)');
+                        myVote.text(' (My vote: -1)');
                     }
                     else if (response.message === "VoteRemoved") {
                         incrementVoteCount(id);
