@@ -48,7 +48,7 @@ namespace StackOverflow.Web.Controllers
                     await model.CreateQuestion();
                     TempData.Put<ResponseModel>("ResponseMessage", new ResponseModel
                     {
-                        Message = "Question Create Successfully",
+                        Message = "Question Created Successfully",
                         Type = ResponseTypes.Success
                     });
                     _logger.LogInformation("Question Created By " + userId);
@@ -56,6 +56,11 @@ namespace StackOverflow.Web.Controllers
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, ex.Message);
+                    TempData.Put<ResponseModel>("ResponseMessage", new ResponseModel
+                    {
+                        Message = "Question Create Failed",
+                        Type = ResponseTypes.Success
+                    });
                 }
             }
             return View(model);
