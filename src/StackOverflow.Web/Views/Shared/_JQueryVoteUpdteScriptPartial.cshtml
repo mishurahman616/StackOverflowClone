@@ -18,20 +18,20 @@
                     voteType: "UpVote"
                 },
                 success: function (response) {
-                    if (response === "NewVoteInserted") {
+                    if (response.message === "NewVoteInserted") {
                         incrementVoteCount(id);
                         showVoteAlert("Vote Added", "success")
                         //Update my vote
                         myVote.text('(My vote: 1)');
                     }
-                    else if (response === "VoteUpdated") {
+                    else if (response.message === "VoteUpdated") {
                         incrementVoteCount(id);
                         incrementVoteCount(id);
                         showVoteAlert("Vote Updated", "success")
                         //Update my vote
                         myVote.text('(My vote: 1)');
                     }
-                    else if (response === "VoteRemoved") {
+                    else if (response.message === "VoteRemoved") {
                         decrementVoteCount(id);
                         showVoteAlert("Vote Removed", "success")
                         //Update my vote
@@ -67,20 +67,20 @@
                     voteType: "DownVote"
                 },
                 success: function (response) {
-                    if (response === "NewVoteInserted") {
+                    if (response.message === "NewVoteInserted") {
                         decrementVoteCount(id);
                         showVoteAlert("Vote Added", "success")
                         //Update my vote
                         myVote.text('(My vote: -1)');
                     }
-                    else if (response === "VoteUpdated") {
+                    else if (response.message === "VoteUpdated") {
                         decrementVoteCount(id);
                         decrementVoteCount(id);
                         showVoteAlert("Vote Updated", "success")
                         //Update my vote
                         myVote.text('(My vote: -1)');
                     }
-                    else if (response === "VoteRemoved") {
+                    else if (response.message === "VoteRemoved") {
                         incrementVoteCount(id);
                         showVoteAlert("Vote Removed", "success")
                         //Update my vote

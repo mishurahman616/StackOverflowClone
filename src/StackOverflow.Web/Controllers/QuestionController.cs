@@ -194,17 +194,26 @@ namespace StackOverflow.Web.Controllers
             return View(model);
         }
 
-
         [ValidateAntiForgeryToken]
-        public string UpdateVote(Guid id, string voteType)
+        public JsonResult UpdateVote(Guid id, string voteType)
         {
-            string uId = User.Identity.GetUserId();
-            Guid userId = Guid.Parse(uId);
-            var model = _scope.Resolve<QuestionVoteModel>();
-            model.UserId = userId;
-            model.QuestionId = id;
-            model.VoteType = Enum.Parse<VoteType>(voteType);
-            return model.UpdateVote().Result.ToString();
+            try
+            {
+                string uId = User.Identity.GetUserId();
+                Guid userId = Guid.Parse(uId);
+                var model = _scope.Resolve<QuestionVoteModel>();
+                model.UserId = userId;
+                model.QuestionId = id;
+                model.VoteType = Enum.Parse<VoteType>(voteType);
+                var message = model.UpdateVote().Result.ToString();
+                return Json(new { message});
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message.ToString(), ex);
+                return Json(new { message = "Error" });
+            }
         }
 
     }
