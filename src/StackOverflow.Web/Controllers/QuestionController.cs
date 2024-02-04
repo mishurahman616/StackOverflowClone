@@ -2,6 +2,7 @@
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using StackOverflow.BL.Exceptions;
 using StackOverflow.DAL.Enums;
 using StackOverflow.Web.Extensions;
 using StackOverflow.Web.Models;
@@ -76,13 +77,37 @@ namespace StackOverflow.Web.Controllers
 
                 return View(model);
             }
-            catch(Exception ex)
+            catch(Exception ex) when (ex is NotFoundException || ex is PermissionMissingException)
             {
                 TempData.Put<ResponseModel>("ResponseMessage", new ResponseModel
                 {
-                    Message = "You do not have permission",
+                    Message = ex.Message,
                     Type = ResponseTypes.Danger
                 });
+
+                // Get the referrer URL from the HttpContext
+                string referrerUrl = HttpContext.Request.Headers["Referer"];
+
+                // Check if the referrer URL is not null or empty
+                if (!string.IsNullOrEmpty(referrerUrl))
+                {
+                    // Redirect the user back to the referrer URL
+                    return Redirect(referrerUrl);
+                }
+
+                return View();
+            }
+            catch(Exception ex)
+            {
+                //log error 
+                _logger.LogError($"{ex.Message}", ex);
+
+                TempData.Put<ResponseModel>("ResponseMessage", new ResponseModel
+                {
+                    Message = "Something went wrong",
+                    Type = ResponseTypes.Danger
+                });
+
                 return View();
             }
         }
@@ -104,8 +129,19 @@ namespace StackOverflow.Web.Controllers
                     });
                     return View(model);
                 }
-                catch (Exception ex)
+                catch (Exception ex) when(ex is NotFoundException || ex is PermissionMissingException)
                 {
+                    TempData.Put<ResponseModel>("ResponseMessage", new ResponseModel
+                    {
+                        Message = ex.Message,
+                        Type = ResponseTypes.Danger
+                    });
+                    return View(model);
+                }
+                catch(Exception ex)
+                {
+                    _logger.LogError(ex.ToString(), ex);
+
                     TempData.Put<ResponseModel>("ResponseMessage", new ResponseModel
                     {
                         Message = "Question Update Failed",

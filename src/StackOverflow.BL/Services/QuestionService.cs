@@ -1,4 +1,5 @@
 ﻿using StackOverflow.BL.DTOs;
+using StackOverflow.BL.Exceptions;
 using StackOverflow.DAL.Entities;
 using StackOverflow.DAL.Enums;
 using StackOverflow.DAL.UnitOfWorks;
@@ -65,13 +66,16 @@ namespace StackOverflow.BL.Services
             await _unitOfWork.BeginTransaction();
             var user = await _unitOfWork.Users.GetById(userId);
             var question = await _unitOfWork.Questions.GetById(questionToUpdate.Id);
-            if(question != null && user !=null && question.User.Id==userId)
+
+            if (question != null && user != null && question.User.Id == userId)
             {
                 question.Title = questionToUpdate.Title;
                 question.Body = questionToUpdate.Body;
-               await _unitOfWork.Questions.Update(question);
+                await _unitOfWork.Questions.Update(question);
+                await _unitOfWork.Commit();
             }
-            await _unitOfWork.Commit();
+            else throw new PermissionMissingException("You do not have permission");
+           
         }
         public async Task<VoteUpdateStatus> UpdateQuestionVote(Guid questionId, Guid userId, VoteType voteType)
         {

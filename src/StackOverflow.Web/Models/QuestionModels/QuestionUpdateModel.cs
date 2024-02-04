@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using StackOverflow.BL.Exceptions;
 using StackOverflow.BL.Services;
 using StackOverflow.DAL.Entities;
 using System.ComponentModel.DataAnnotations;
@@ -40,12 +41,17 @@ namespace StackOverflow.Web.Models.QuestionModels
 
         public async Task LoadQuestion(Guid id, Guid userId)
         {
-            var quesiton = await _questionService.GetQuestionById(id);
-            if( quesiton != null && quesiton.User.Id == userId) 
+            var quesiton = await _questionService.GetQuestionById(id) ?? throw new NotFoundException("Question not Found");
+            
+            if (quesiton.User.Id == userId) 
             {
                 Id = quesiton.Id;
                 Title = quesiton.Title;
                 Body = quesiton.Body;
+            }
+            else
+            {
+                throw new PermissionMissingException("You do not have permission to edit this Question");
             }
         }
         public async Task UpdateQuestion(Guid userId)
