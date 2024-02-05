@@ -37,131 +37,134 @@
 
     </div>
     <partial name="_ResponsePartial" />
-    @foreach(var question in Model.Questions)
+    @if (Model.Questions != null)
     {
-        <div class="row my-3">
-            <div class="col">
-                <div class="card">
-                    <div class="card-body d-flex">
-                        <div class="col-1">
-
-                            <div>
-                                <a class="up-vote" data-id="@question.Id.ToString("N")" ><i class=" fa fa-caret-up fa-2x"></i></a>
-                            </div>
-                            <div>
-                                <a class="down-vote" data-id="@question.Id.ToString("N")" ><i class="fa fa-caret-down fa-2x"></i></a>
-                            </div>
-                        </div>
-
-                        <div class="col-11">
-                            <b>
-                                <a class="text-decoration-none" asp-action="Details" asp-route-id="@question.Id.ToString("N")" asp-controller="Question">@question.Title</a>
-                            </b>
-                            <p>@question.Body</p>
-                        </div>
-                    </div>
-                    <div class="card-footer ">
-                        <div class="row">
-                            <div class="col-4 d-flex justify-content-start">
-                                Votes: <span class="vote-count-@question.Id.ToString("N")">@question.Votes?.Sum(vote => (int)vote.VoteType)</span>
-                                @if (User.Identity?.Name != null)
-                                {
-                                    int myVote = (int?)question.Votes?.Where(x => x.User.UserName == User.Identity?.Name).FirstOrDefault()?.VoteType ?? 0;
-                                    <span>
-                                        <span title="My Vote" class="my-vote-@question.Id.ToString("N")">
-                                            @if (myVote != 0)
-                                            {
-                                                <span> (My Vote: @myVote)</span>
-                                            }
-                                        </span>
-                                    </span>
-                                }
-                            </div>
-                            <div class="col-4 d-flex justify-content-center">
-                                <a class="text-decoration-none" asp-action="Details" asp-route-id="@question.Id.ToString("N")" asp-controller="Question"><i title="Answer" class="fa-regular fa-message"></i> @question.Answers?.Count()</a>
-                            </div>
-                            <div class="col-4 d-flex justify-content-end">
-                                Asked By: @(question.User != null ? question.User.FirstName : "")
-                            </div>
-                        </div>
-                    </div>
-                </div>        
-            </div>
-        </div>
-    }
-    <nav aria-label="Page navigation example">
-        <ul class="pagination justify-content-center">
-            @if (Model.PageIndex > 0)
-            {
-                <li class="page-item mr-1">
-                    <form class="search-form" asp-action="Index" asp-controller="Question" method="get">
-                        <input type="hidden" asp-for="SearchText" value="@Model.SearchText" />
-                        <input type="hidden" asp-for="PageIndex" value="@(Model.PageIndex - 1)" />
-                        <button class="btn border" type="submit" aria-label="Previous">
-                            <span aria-hidden="true">&laquo; Previous</span>
-                        </button>
-                    </form>
-                </li>
-            }
-            else
-            {
-                <li class="page-item disabled mr-1">
-                    <form class="search-form" asp-action="Index" asp-controller="Question" method="get">
-                        <input type="hidden" asp-for="SearchText" value="@Model.SearchText" />
-                        <input type="hidden" asp-for="PageIndex" value="@(Model.PageIndex - 1)" />
-                        <button class="btn border" type="submit" aria-label="Previous" disabled>
-                            <span aria-hidden="true">&laquo; Previous</span>
-                        </button>
-                    </form>
-                </li>
-            }
-            @for (var index = 0; index < Model.TotalPage; index++)
-            {
-                <li>
-                    <form class="search-form" asp-action="Index" asp-controller="Question" method="get">
-                        <div class="input-group">
-                            <input type="hidden" asp-for="SearchText" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="search-addon" value="@Model.SearchText">
-                        <input type="hidden" asp-for="PageIndex" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="search-addon" value="@index">
-                            <div class="input-group-append">
-                            @if (index == Model.PageIndex)
-                            {
-                                <button class="btn btn-primary" type="submit" id="search-addon">@(index + 1)</button>
-                            }
-                            else{
-                                <button class="btn" type="submit" id="search-addon">@(index + 1)</button>                                
-                            }
-                            </div>
-                        </div>
-                    </form>
-                </li>
-            }
-
-            @if (Model.PageIndex < Model.TotalPage - 1)
+        @foreach(var question in Model.Questions)
         {
-            <li class="page-item ml-1">
-                <form class="search-form" asp-action="Index" asp-controller="Question" method="get">
-                    <input type="hidden" asp-for="SearchText" value="@Model.SearchText" />
-                    <input type="hidden" asp-for="PageIndex" value="@(Model.PageIndex + 1)" />
-                    <button class="btn border" type="submit" aria-label="Next">
-                        <span aria-hidden="true">Next &raquo;</span>
-                    </button>
-                </form>
-                </li>
-            }
-            else
+            <div class="row my-3">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body d-flex">
+                            <div class="col-1">
+
+                                <div>
+                                    <a class="up-vote" data-id="@question.Id.ToString("N")" ><i class=" fa fa-caret-up fa-2x"></i></a>
+                                </div>
+                                <div>
+                                    <a class="down-vote" data-id="@question.Id.ToString("N")" ><i class="fa fa-caret-down fa-2x"></i></a>
+                                </div>
+                            </div>
+
+                            <div class="col-11">
+                                <b>
+                                    <a class="text-decoration-none" asp-action="Details" asp-route-id="@question.Id.ToString("N")" asp-controller="Question">@question.Title</a>
+                                </b>
+                                <p>@question.Body</p>
+                            </div>
+                        </div>
+                        <div class="card-footer ">
+                            <div class="row">
+                                <div class="col-4 d-flex justify-content-start">
+                                    Votes: <span class="vote-count-@question.Id.ToString("N")">@question.Votes?.Sum(vote => (int)vote.VoteType)</span>
+                                    @if (User.Identity?.Name != null)
+                                    {
+                                        int myVote = (int?)question.Votes?.Where(x => x.User.UserName == User.Identity?.Name).FirstOrDefault()?.VoteType ?? 0;
+                                        <span>
+                                            <span title="My Vote" class="my-vote-@question.Id.ToString("N")">
+                                                @if (myVote != 0)
+                                                {
+                                                    <span> (My Vote: @myVote)</span>
+                                                }
+                                            </span>
+                                        </span>
+                                    }
+                                </div>
+                                <div class="col-4 d-flex justify-content-center">
+                                    <a class="text-decoration-none" asp-action="Details" asp-route-id="@question.Id.ToString("N")" asp-controller="Question"><i title="Answer" class="fa-regular fa-message"></i> @question.Answers?.Count()</a>
+                                </div>
+                                <div class="col-4 d-flex justify-content-end">
+                                    Asked By: @(question.User != null ? question.User.FirstName : "")
+                                </div>
+                            </div>
+                        </div>
+                    </div>        
+                </div>
+            </div>
+        }
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+                @if (Model.PageIndex > 0)
+                {
+                    <li class="page-item mr-1">
+                        <form class="search-form" asp-action="Index" asp-controller="Question" method="get">
+                            <input type="hidden" asp-for="SearchText" value="@Model.SearchText" />
+                            <input type="hidden" asp-for="PageIndex" value="@(Model.PageIndex - 1)" />
+                            <button class="btn border" type="submit" aria-label="Previous">
+                                <span aria-hidden="true">&laquo; Previous</span>
+                            </button>
+                        </form>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item disabled mr-1">
+                        <form class="search-form" asp-action="Index" asp-controller="Question" method="get">
+                            <input type="hidden" asp-for="SearchText" value="@Model.SearchText" />
+                            <input type="hidden" asp-for="PageIndex" value="@(Model.PageIndex - 1)" />
+                            <button class="btn border" type="submit" aria-label="Previous" disabled>
+                                <span aria-hidden="true">&laquo; Previous</span>
+                            </button>
+                        </form>
+                    </li>
+                }
+                @for (var index = 0; index < Model.TotalPage; index++)
+                {
+                    <li>
+                        <form class="search-form" asp-action="Index" asp-controller="Question" method="get">
+                            <div class="input-group">
+                                <input type="hidden" asp-for="SearchText" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="search-addon" value="@Model.SearchText">
+                            <input type="hidden" asp-for="PageIndex" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="search-addon" value="@index">
+                                <div class="input-group-append">
+                                @if (index == Model.PageIndex)
+                                {
+                                    <button class="btn btn-primary" type="submit" id="search-addon">@(index + 1)</button>
+                                }
+                                else{
+                                    <button class="btn" type="submit" id="search-addon">@(index + 1)</button>                                
+                                }
+                                </div>
+                            </div>
+                        </form>
+                    </li>
+                }
+
+                @if (Model.PageIndex < Model.TotalPage - 1)
             {
-                <li class="page-item disabled ml-1">
+                <li class="page-item ml-1">
                     <form class="search-form" asp-action="Index" asp-controller="Question" method="get">
                         <input type="hidden" asp-for="SearchText" value="@Model.SearchText" />
                         <input type="hidden" asp-for="PageIndex" value="@(Model.PageIndex + 1)" />
-                        <button class="btn border" type="submit" aria-label="Next" disabled>
+                        <button class="btn border" type="submit" aria-label="Next">
                             <span aria-hidden="true">Next &raquo;</span>
                         </button>
                     </form>
-                </li>
-            }
-        </ul>
-    </nav>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item disabled ml-1">
+                        <form class="search-form" asp-action="Index" asp-controller="Question" method="get">
+                            <input type="hidden" asp-for="SearchText" value="@Model.SearchText" />
+                            <input type="hidden" asp-for="PageIndex" value="@(Model.PageIndex + 1)" />
+                            <button class="btn border" type="submit" aria-label="Next" disabled>
+                                <span aria-hidden="true">Next &raquo;</span>
+                            </button>
+                        </form>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
 </div>
 
 @section Scripts{
