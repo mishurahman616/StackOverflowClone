@@ -21,10 +21,14 @@ namespace StackOverflow.Web.Controllers
             _logger = logger;
         }
         [AllowAnonymous]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(QuestionListModel model)
         {
-            var model = _scope.Resolve<QuestionListModel>();
-            await model.LoadQuestions();
+            model.ResolveDependency(_scope);
+            var (questions, total, totalToDislplay, totalPages) = await model.GetPaginated(model.SearchText, model.PageIndex, model.PageSize);
+            model.Questions = questions;
+            model.TotalQuestion = total;
+            model.TotalToDisplay = totalToDislplay;
+            model.TotalPage = totalPages;
             return View(model);
         }
 

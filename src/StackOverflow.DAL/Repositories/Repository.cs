@@ -30,9 +30,24 @@ namespace StackOverflow.DAL.Repositories
            return await _session.Query<TEntity>().ToListAsync();
         }
 
+        public async Task<(IList<TEntity>entities, int total, int totalToDislplay, int totalPages)>GetPaginated(Expression<Func<TEntity, bool>>? predicate, int pageIndex, int pageSize)
+        {
+            var query = _session.Query<TEntity>();
+            var total = await query.CountAsync();
+            if (predicate != null)
+            {
+                query = query.Where(predicate);
+            }
+            var totalToDislplay = await query.CountAsync();
+            var totalPages = (int)Math.Ceiling((double) totalToDislplay / pageSize);
+            var result = await query.Skip(pageIndex * pageSize).Take(pageSize).ToListAsync();
+            return (result, total, totalToDislplay, totalPages);
+        }
+
         public async Task<TEntity> GetById(TKey id)
         {
             return await _session.GetAsync<TEntity>(id);
+            
         }
 
         public async Task<TEntity> GetSingle(Expression<Func<TEntity, bool>> predicate)

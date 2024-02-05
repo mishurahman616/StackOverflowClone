@@ -117,5 +117,11 @@ namespace StackOverflow.BL.Services
             }
             return VoteUpdateStatus.NoChange;
         }
+
+        public async Task<(IList<Question>questions, int total, int totalToDislplay, int totalPages)> GetPaginated(Expression<Func<Question, bool>>? predicate = null, int pageIndex=1, int pageSize = 1)
+        {
+            return await _unitOfWork.Questions.GetPaginated(predicate, pageIndex, pageSize);
+        }
+
     }
 }

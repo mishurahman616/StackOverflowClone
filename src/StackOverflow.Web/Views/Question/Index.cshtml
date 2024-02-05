@@ -7,11 +7,11 @@
 }
 @model QuestionListModel
 <div class="container mt-4">
-    <form class="form-inline">
+    <form class="search-form" asp-action="Index" asp-controller="Question" method="get">
         <div class="input-group">
-            <input type="text" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="search-addon">
+            <input type="text" asp-for="SearchText" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="search-addon" value="@ViewBag.searchText">
             <div class="input-group-append">
-                <button class="btn btn-outline-primary" type="button" id="search-addon"><i class="fa fa-search"></i></button>
+                <button class="btn btn-outline-primary" type="submit" id="search-addon"><i class="fa fa-search"></i></button>
             </div>
         </div>
     </form>
@@ -19,10 +19,18 @@
 
 <div class="container question-list">
     <div class="my-3 row">
+        <div>
+            <span>Total Question: @Model.TotalQuestion</span>
+            <span> Total Filtered: @Model.TotalToDisplay</span>
+            <span>Total Pages: @Model.TotalPage</span>
+           
+            
+        </div>
         <div class="d-flex justify-content-end">
             <a class="btn btn-primary" asp-action="Create" asp-controller="Question">Ask Question</a>
         </div>
     </div>
+
     <div class="question-list-message">
 
     </div>
@@ -79,6 +87,79 @@
             </div>
         </div>
     }
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            @if (Model.PageIndex > 0)
+            {
+                <li class="page-item mr-1">
+                    <form class="search-form" asp-action="Index" asp-controller="Question" method="get">
+                        <input type="hidden" asp-for="SearchText" value="@Model.SearchText" />
+                        <input type="hidden" asp-for="PageIndex" value="@(Model.PageIndex - 1)" />
+                        <button class="btn border" type="submit" aria-label="Previous">
+                            <span aria-hidden="true">&laquo; Previous</span>
+                        </button>
+                    </form>
+                </li>
+            }
+            else
+            {
+                <li class="page-item disabled mr-1">
+                    <form class="search-form" asp-action="Index" asp-controller="Question" method="get">
+                        <input type="hidden" asp-for="SearchText" value="@Model.SearchText" />
+                        <input type="hidden" asp-for="PageIndex" value="@(Model.PageIndex - 1)" />
+                        <button class="btn border" type="submit" aria-label="Previous" disabled>
+                            <span aria-hidden="true">&laquo; Previous</span>
+                        </button>
+                    </form>
+                </li>
+            }
+            @for (var index = 0; index < Model.TotalPage; index++)
+            {
+                <li>
+                    <form class="search-form" asp-action="Index" asp-controller="Question" method="get">
+                        <div class="input-group">
+                            <input type="hidden" asp-for="SearchText" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="search-addon" value="@Model.SearchText">
+                        <input type="hidden" asp-for="PageIndex" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="search-addon" value="@index">
+                            <div class="input-group-append">
+                            @if (index == Model.PageIndex)
+                            {
+                                <button class="btn btn-primary" type="submit" id="search-addon">@(index + 1)</button>
+                            }
+                            else{
+                                <button class="btn" type="submit" id="search-addon">@(index + 1)</button>                                
+                            }
+                            </div>
+                        </div>
+                    </form>
+                </li>
+            }
+
+            @if (Model.PageIndex < Model.TotalPage - 1)
+        {
+            <li class="page-item ml-1">
+                <form class="search-form" asp-action="Index" asp-controller="Question" method="get">
+                    <input type="hidden" asp-for="SearchText" value="@Model.SearchText" />
+                    <input type="hidden" asp-for="PageIndex" value="@(Model.PageIndex + 1)" />
+                    <button class="btn border" type="submit" aria-label="Next">
+                        <span aria-hidden="true">Next &raquo;</span>
+                    </button>
+                </form>
+                </li>
+            }
+            else
+            {
+                <li class="page-item disabled ml-1">
+                    <form class="search-form" asp-action="Index" asp-controller="Question" method="get">
+                        <input type="hidden" asp-for="SearchText" value="@Model.SearchText" />
+                        <input type="hidden" asp-for="PageIndex" value="@(Model.PageIndex + 1)" />
+                        <button class="btn border" type="submit" aria-label="Next" disabled>
+                            <span aria-hidden="true">Next &raquo;</span>
+                        </button>
+                    </form>
+                </li>
+            }
+        </ul>
+    </nav>
 </div>
 
 @section Scripts{

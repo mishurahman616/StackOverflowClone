@@ -12,5 +12,7 @@ namespace StackOverflow.DAL.Repositories.Interfaces
         Task<TEntity> GetById(TKey id);
         Task<TEntity> GetSingle(Expression<Func<TEntity, bool>> filters);
         Task<IList<TEntity>> GetAll();
+        Task<(IList<TEntity> entities, int total, int totalToDislplay, int totalPages)> GetPaginated(Expression<Func<TEntity, bool>>? predicate, int pageIndex, int pageSize);
+
     }
 }

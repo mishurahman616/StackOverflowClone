@@ -16,5 +16,7 @@ namespace StackOverflow.BL.Services
         Task<IList<Question>> GetAllQuestions();
         Task<IList<Question>> GetQuestions(Expression<Func<Question, bool>> filters);
         Task<VoteUpdateStatus> UpdateQuestionVote(Guid questionId, Guid userId, VoteType voteType);
+        Task<(IList<Question>questions, int total, int totalToDislplay, int totalPages)> GetPaginated(Expression<Func<Question, bool>>? predicate = null, int pageIndex = 1, int pageSize = 10);
+
     }
 }
