@@ -37,6 +37,13 @@ namespace StackOverflow.Web.Models.AnswerModels
         {
             _answerService = scope.Resolve<IAnswerService>();
         }
+        public async Task LoadAnswer(Guid id)
+        {
+            var answer = await _answerService.GetAnswerById(id) ?? throw new NotFoundException("Answer not found");
+            Id = answer.Id;
+            Body = answer.Body;
+            QuestionId = answer.Question.Id;
+        }
 
         public async Task LoadAnswer(Guid id, Guid userId)
         {

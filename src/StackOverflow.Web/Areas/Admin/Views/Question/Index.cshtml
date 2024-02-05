@@ -59,7 +59,7 @@
                                 <b>
                                     <a class="text-decoration-none" asp-action="Details" asp-route-id="@question.Id.ToString("N")" asp-controller="Question">@question.Title</a>
                                 </b>
-                                <p>@question.Body</p>
+                                <p class="text-truncate">@question.Body</p>
                             </div>
                         </div>
                         <div class="card-footer ">

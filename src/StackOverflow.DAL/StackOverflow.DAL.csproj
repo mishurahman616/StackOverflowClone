@@ -7,11 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Securities\**" />
     <Compile Remove="Seed\**" />
-    <EmbeddedResource Remove="Securities\**" />
     <EmbeddedResource Remove="Seed\**" />
-    <None Remove="Securities\**" />
     <None Remove="Seed\**" />
   </ItemGroup>
 

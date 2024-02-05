@@ -1,7 +1,6 @@
 ﻿using Autofac;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using StackOverflow.BL.Exceptions;
 using StackOverflow.Web.Extensions;

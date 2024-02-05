@@ -1,5 +1,6 @@
 ﻿@using StackOverflow.DAL.Membership.Entities
 @using Microsoft.AspNetCore.Identity
+@using StackOverflow.DAL.Securities
 
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
@@ -7,7 +8,7 @@
 <ul class="navbar-nav">
 @if (SignInManager.IsSignedIn(User))
     {
-        @if (User.IsInRole("Admin"))
+        @if (User.IsInRole(RoleTypes.Admin))
         {
             <li class="nav-item">
                 <a id="manage" class="nav-link text-dark" asp-action="Index" asp-controller="Question" asp-area="Admin" title="Manage"> Admin Panel</a>

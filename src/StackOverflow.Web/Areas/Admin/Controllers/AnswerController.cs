@@ -61,7 +61,7 @@ namespace StackOverflow.Web.Areas.Admin.Controllers
             {
                 var model = _scope.Resolve<AnswerUpdateModel>();
                 var userId = Guid.Parse(User.Identity.GetUserId());
-                await model.LoadAnswer(id, userId);
+                await model.LoadAnswer(id);
 
                 return View(model);
             }
@@ -109,6 +109,8 @@ namespace StackOverflow.Web.Areas.Admin.Controllers
                         Message = "Answer Update Successfully",
                         Type = ResponseTypes.Success
                     });
+
+                    return RedirectToAction("Details", "Question", new { id =model.QuestionId});
                 }
                 catch (Exception ex) when (ex is NotFoundException || ex is PermissionMissingException)
                 {
@@ -138,12 +140,13 @@ namespace StackOverflow.Web.Areas.Admin.Controllers
             try
             {
                 var model = _scope.Resolve<AnswerListModel>();
-                await model.DeleteAnswerByAdmin(id);
+                var questionId = await model.DeleteAnswerByAdmin(id);
                 TempData.Put<ResponseModel>("ResponseMessage", new ResponseModel
                 {
                     Message = "Answer Deleted Successfully",
                     Type = ResponseTypes.Success
                 });
+                return RedirectToAction("Details", "Question", new { id=questionId });
             }
             catch (Exception ex) when (ex is NotFoundException || ex is PermissionMissingException)
             {
@@ -163,7 +166,7 @@ namespace StackOverflow.Web.Areas.Admin.Controllers
                 });
             }
 
-            return RedirectToAction("Details", "Question", new { id});
+            return RedirectToAction("Index", "Question");
         }
     }
 }

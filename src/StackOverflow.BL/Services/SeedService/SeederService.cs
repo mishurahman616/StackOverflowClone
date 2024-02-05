@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using StackOverflow.DAL.Membership.Entities;
+using StackOverflow.DAL.Securities;
 
 public class SeederService : ISeederService
 {
@@ -14,12 +15,12 @@ public class SeederService : ISeederService
     public async Task Seed()
     {
 
-        if (!await _roleManager.RoleExistsAsync("Admin"))
+        if (!await _roleManager.RoleExistsAsync(RoleTypes.Admin))
         {
             await _roleManager.CreateAsync(new ApplicationRole()
             {
-                Name = "Admin",
-                NormalizedName = "ADMIN"
+                Name = RoleTypes.Admin,
+                NormalizedName = RoleTypes.Admin.ToUpperInvariant()
             });
         }
 
@@ -34,7 +35,7 @@ public class SeederService : ISeederService
                 LastName = "Rahman"
             };
             await _userManager.CreateAsync(adminUser, "123456");
-            await _userManager.AddToRoleAsync(adminUser, "Admin");
+            await _userManager.AddToRoleAsync(adminUser, RoleTypes.Admin);
         }
     }
 }
