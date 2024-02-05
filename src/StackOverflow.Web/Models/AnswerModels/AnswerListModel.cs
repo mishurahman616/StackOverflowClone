@@ -39,5 +39,10 @@ namespace StackOverflow.Web.Models.AnswerModels
             }
 
         }
+        public async Task DeleteAnswerByAdmin(Guid answerId)
+        {
+            var answer = await _answerService.GetAnswerById(answerId) ?? throw new NotFoundException("Answer Not Found");
+            await _answerService.DeleteAnswer(answer);
+        }
     }
 }

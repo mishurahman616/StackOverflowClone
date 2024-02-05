@@ -1,0 +1,171 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    @using StackOverflow.Web.Models.QuestionModels;
+    ViewData["Title"] = "Question Details";
+}
+@model QuestionDetailsModel
+<div class="container mt-4">
+    <h4>Question</h4>
+</div>
+<partial name="_ResponsePartial" />
+@if (Model.Question != null)
+{
+    <div class="container question-details">
+        <div class="question-list-message">
+        </div>
+
+        <div class="row my-3">
+            <div class="col">
+                <div class="card  bg-light">
+                    <div class="card-body d-flex">
+                        <div class="col-1">
+                            <div>
+                                <a class="up-vote" title="Give a positive vote" data-id="@Model.Question.Id.ToString("N")"><i class=" fa fa-caret-up fa-2x"></i></a>
+                            </div>
+                            <div>
+                                <a class="down-vote" title="Give a negative vote" data-id="@Model.Question.Id.ToString("N")"><i class="fa fa-caret-down fa-2x"></i></a>
+                            </div>
+                        </div>
+
+                        <div class="col-11">
+                            <b>@Model.Question.Title</b>
+                            <p>@Model.Question.Body</p>
+                            <div class="d-flex gap-1 justify-content-end">
+                                <a class="btn btn-info " href="#addAnswer">Give Answer</a>
+                                <a id="questionDeleteButton" class="btn btn-danger" href="" data-id="@Model.Question.Id.ToString("N")" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</a>
+
+                                </div>
+                        </div>
+                    </div>
+                    <div class="card-footer d-flex justify-content-between">
+                        <div class="mr-3">
+                            Votes: <span class="vote-count-@Model.Question.Id.ToString("N")">@Model.Question.Votes?.Sum(vote => (int)vote.VoteType) </span>
+                            @if (User.Identity?.Name != null)
+                            {
+                                int myVote = (int?)Model.Question.Votes?.Where(x => x.User.UserName == User.Identity?.Name).FirstOrDefault()?.VoteType ?? 0;
+                                <span class="ml-3">
+                                    <span title="My Vote" class="my-vote-@Model.Question.Id.ToString("N")">
+                                        @if (myVote != 0)
+                                        {
+                                            <span>(My Vote: @myVote)</span>
+                                        }
+                                    </span>
+                                </span>
+                            }
+                        </div>
+                        <div>
+                            Asked By: @(Model.Question.User != null ? Model.Question.User.FirstName : "")
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container my-4">
+        <h4>Answers: <span class="answer-count"> (@Model.Question.Answers?.Count())</span></h4>
+    </div>
+    <div class="container question-list">
+        @if (Model.Question?.Answers?.Count() > 0)
+            @foreach (var answer in Model.Question.Answers)
+            {
+                <div class="row my-3">
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-body d-flex">
+                                <div class="col-1">
+
+                                    <div>
+                                        <a class="up-vote" data-answer="true" data-id="@answer.Id.ToString("N")"><i class=" fa fa-caret-up fa-2x"></i></a>
+                                    </div>
+                                    <div>
+                                        <a class="down-vote" data-answer="true" data-id="@answer.Id.ToString("N")"><i class="fa fa-caret-down fa-2x"></i></a>
+                                    </div>
+                                </div>
+
+                                <div class="col-11">
+                                    <p>@answer.Body</p>
+                                    <div>
+                                        <a class="me-2" asp-route-id="@answer.Id.ToString("N")" asp-action="Edit" asp-controller="Answer" asp-area="Admin">Edit</a>
+                                        <a id="answerDeleteButton" href="" data-id="@answer.Id.ToString("N")" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</a>
+                                        <partial name="_DeleteModalPartial" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer d-flex justify-content-between bg-white">
+                                <div class="mr-3">
+                                    Votes: <span class="vote-count-@answer.Id.ToString("N")">@answer.Votes?.Sum(vote => (int)vote.VoteType)</span>
+                                    @if (User.Identity?.Name != null)
+                                    {
+                                        int myVote = (int?)answer.Votes?.Where(x => x.User.UserName == User.Identity?.Name).FirstOrDefault()?.VoteType ?? 0;
+                                        <span class="ml-3">
+                                            <span title="My Vote" class="my-vote-@answer.Id.ToString("N")">
+                                                @if (myVote != 0)
+                                                {
+                                                    <span>(My Vote: @myVote)</span>
+                                                }
+                                            </span>
+                                        </span>
+                                    }
+                                </div>
+                                <div>
+                                    Answered By: @(answer.User != null ? answer.User.FirstName : "")
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+    </div>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col">
+                <div class="mt-5">
+                    <form id="addAnswer" asp-action="Create" asp-controller="Answer" asp-area="" method="post" asp-antiforgery="true">
+                        <div class="mb-3">
+                            <input type="hidden" name="QuestionId" value="@Model.Question.Id" />
+                            <input type="hidden" name="UserId" value="@Model.Question.User.Id" />
+                            <label for="Body" class="form-label fw-bolder">Your answer</label>
+                            <textarea class="form-control" name="Body" for="Body" rows="4"></textarea>
+                            <span for="Body" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3 text-center">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <h5>No Question Found!</h5>
+}
+@section Scripts {
+    <partial name="_JQueryVoteUpdteScriptPartial" />
+    <script>
+        $(document).ready(function () {
+            $('#answerDeleteButton').click(function () {
+                let id = $(this).data('id');
+                $('#deleteId').val(id);
+                $('#deleteForm').attr('action', '/Admin/Answer/Delete');
+                $('#deleteForm').attr('method', 'post');
+            });
+            $('#deleteConfirmButton').click(function () {
+                $('#deleteForm').submit();
+            })
+
+            $('#questionDeleteButton').click(function () {
+                let id = $(this).data('id');
+                $('#deleteId').val(id);
+                $('#deleteForm').attr('action', '/Admin/Question/Delete');
+                $('#deleteForm').attr('method', 'post');
+            });
+            $('#deleteConfirmButton').click(function () {
+                $('#deleteForm').submit();
+            })
+        });
+    </script>
+}

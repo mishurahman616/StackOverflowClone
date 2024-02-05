@@ -1,0 +1,132 @@
+﻿<script>
+    $(document).ready(function () {
+        let loginMessage = 'To vote, you need to <a href="/Account/Login" class="alert-link">login</a>.';
+
+        $(".up-vote").on("click", function (e) {
+            let id = $(this).data('id')
+            let isAnswer = $(this).data('answer');
+            let myVote = $('.my-vote-' + id);
+            $.ajax({
+                url: isAnswer === true ? '@Url.Action("UpdateVote", "Answer", new {area=""})' : '@Url.Action("UpdateVote", "Question", new{area=""})',
+                type: 'POST',
+                headers: {
+                    'RequestVerificationToken': $('input:hidden[name="__RequestVerificationToken"]').val()
+                },
+                data: {
+
+                    id: id,
+                    voteType: "UpVote"
+                },
+                success: function (response) {
+                    if (response.message === "NewVoteInserted") {
+                        incrementVoteCount(id);
+                        showVoteAlert("Vote Added", "success")
+                        //Update my vote
+                        myVote.text(' (My vote: 1)');
+                    }
+                    else if (response.message === "VoteUpdated") {
+                        incrementVoteCount(id);
+                        incrementVoteCount(id);
+                        showVoteAlert("Vote Updated", "success")
+                        //Update my vote
+                        myVote.text(' (My vote: 1)');
+                    }
+                    else if (response.message === "VoteRemoved") {
+                        decrementVoteCount(id);
+                        showVoteAlert("Vote Removed", "success")
+                        //Update my vote
+                        myVote.text('');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    if (xhr.status === 401) {
+                        // Unauthorized access
+                        showVoteAlert(loginMessage, "danger")
+                    }
+                    else {
+                        // Other error,
+                        console.error("Error: " + xhr.responseText);
+                    }
+                }
+            });
+        });
+
+
+        $(".down-vote").click(function (e) {
+            let id = $(this).data('id')
+            let isAnswer = $(this).data('answer');
+            let myVote = $('.my-vote-' + id);
+            $.ajax({
+                url: isAnswer === true ? '@Url.Action("UpdateVote", "Answer", new {area=""})' : '@Url.Action("UpdateVote", "Question", new {area=""})',
+                type: 'POST',
+                headers: {
+                    'RequestVerificationToken': $('input:hidden[name="__RequestVerificationToken"]').val()
+                },
+                data: {
+                    id: id,
+                    voteType: "DownVote"
+                },
+                success: function (response) {
+                    if (response.message === "NewVoteInserted") {
+                        decrementVoteCount(id);
+                        showVoteAlert("Vote Added", "success")
+                        //Update my vote
+                        myVote.text(' (My vote: -1)');
+                    }
+                    else if (response.message === "VoteUpdated") {
+                        decrementVoteCount(id);
+                        decrementVoteCount(id);
+                        showVoteAlert("Vote Updated", "success")
+                        //Update my vote
+                        myVote.text(' (My vote: -1)');
+                    }
+                    else if (response.message === "VoteRemoved") {
+                        incrementVoteCount(id);
+                        showVoteAlert("Vote Removed", "success")
+                        //Update my vote
+                        myVote.text('');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    if (xhr.status === 401) {
+                        // Unauthorized access
+                        showVoteAlert(loginMessage, "danger")
+                    }
+                    else {
+                        // Other error
+                        console.error("Error: " + xhr.responseText);
+                    }
+                }
+            });
+        });
+
+        function incrementVoteCount(id) {
+            let voteCountElement = $(".vote-count-" + id);
+            let currentCount = parseInt(voteCountElement.text());
+            voteCountElement.text(currentCount + 1);
+        }
+
+        function decrementVoteCount(id) {
+            let voteCountElement = $(".vote-count-" + id);
+            let currentCount = parseInt(voteCountElement.text());
+            voteCountElement.text(currentCount - 1);
+        }
+
+        function showVoteAlert(message, type) {
+            // Create a Bootstrap danger alert
+            var alertHtml = '<div class="alert alert-' + type + ' alert-dismissible fade show" role="alert">' +
+                message +
+                '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">';
+
+            // Append the alert to the body
+            $('.question-list-message').append(alertHtml);
+
+            setTimeout(function () {
+                $(".alert").fadeOut();
+            }, 2000);
+        }
+
+    });
+
+
+</script>

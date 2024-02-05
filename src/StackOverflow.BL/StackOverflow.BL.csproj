@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Seed\**" />
+    <EmbeddedResource Remove="Seed\**" />
+    <None Remove="Seed\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="9.0.0" />
   </ItemGroup>
 

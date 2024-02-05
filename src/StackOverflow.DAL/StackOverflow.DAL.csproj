@@ -7,6 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Securities\**" />
+    <Compile Remove="Seed\**" />
+    <EmbeddedResource Remove="Securities\**" />
+    <EmbeddedResource Remove="Seed\**" />
+    <None Remove="Securities\**" />
+    <None Remove="Seed\**" />
+  </ItemGroup>
+
+  <ItemGroup>
 	<PackageReference Include="Autofac.Extensions.DependencyInjection" Version="9.0.0" />
 	<PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.1.39" />
 	<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.6" />

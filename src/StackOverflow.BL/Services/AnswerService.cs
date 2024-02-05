@@ -35,10 +35,15 @@ namespace StackOverflow.BL.Services
             {
                 throw new PermissionMissingException("You do not have permission to edit this answer");
             }
-            
-
         }
-
+        public async Task UpdateAnswer(Answer answerToUpdate)
+        {
+            await _unitOfWork.BeginTransaction();
+            var answer = await _unitOfWork.Answers.GetById(answerToUpdate.Id) ?? throw new NotFoundException("Answer not found");
+            answer.Body=answerToUpdate.Body;
+            await _unitOfWork.Answers.Update(answer);
+            await _unitOfWork.Commit();
+        }
         public async Task<Answer> GetAnswerById(Guid id)
         {
             return await _unitOfWork.Answers.GetById(id);

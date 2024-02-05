@@ -1,10 +1,5 @@
 ﻿using Autofac;
 using StackOverflow.BL.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace StackOverflow.BL
 {
@@ -19,6 +14,8 @@ namespace StackOverflow.BL
             builder.RegisterType<UserService>().As<IUserService>().InstancePerDependency();
 
             builder.RegisterType<AnswerService>().As<IAnswerService>().InstancePerDependency();
+
+            builder.RegisterType<SeederService>().As<ISeederService>().InstancePerDependency();
 
             base.Load(builder);
         }

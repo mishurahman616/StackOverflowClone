@@ -60,5 +60,13 @@ namespace StackOverflow.Web.Models.AnswerModels
             answer.Body = Body;
             await _answerService.UpdateAnswerByUser(answer, userId);
         }
+
+        public async Task UpdateAnswerByAdmin()
+        {
+            var answer = new Answer();
+            answer.Id = Id;
+            answer.Body = Body;
+            await _answerService.UpdateAnswer(answer);
+        }
     }
 }
