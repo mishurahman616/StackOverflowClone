@@ -11,6 +11,7 @@ namespace StackOverflow.BL.Services
         Task UpdateAnswerByUser(Answer answer, Guid userId);
         Task<Answer> GetAnswerById(Guid id);
         Task DeleteAnswer(Answer answer);
-        Task<VoteUpdateStatus> UpdateAnswerVote(Guid answerId, Guid userId, VoteType voteType);
+        Task<VoteResponse> UpdateAnswerVote(Guid answerId, Guid userId, VoteType voteType);
+        Task<int> GetAnswerVoteCount(Guid answerId);
     }
 }

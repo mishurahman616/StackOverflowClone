@@ -56,14 +56,15 @@ namespace StackOverflow.BL.Services
             await _unitOfWork.Commit();
         }
 
-        public async Task<VoteUpdateStatus> UpdateAnswerVote(Guid answerId, Guid userId, VoteType voteType)
+        public async Task<VoteResponse> UpdateAnswerVote(Guid answerId, Guid userId, VoteType voteType)
         {
             var user = await _unitOfWork.Users.GetById(userId);
             var answer = await _unitOfWork.Answers.GetById(answerId);
+            VoteUpdateStatus voteUpdateStatus = VoteUpdateStatus.NoChange;
 
             if (user == null || answer == null)
             {
-                return VoteUpdateStatus.NoChange;
+                voteUpdateStatus = VoteUpdateStatus.NoChange;
             }
 
             var existingVote = await _unitOfWork.AnswerVotes.GetSingle(x => x.Answer.Id == answerId && x.User.Id == userId);
@@ -85,15 +86,22 @@ namespace StackOverflow.BL.Services
 
                 await _unitOfWork.AnswerVotes.Create(newVote);
                 await _unitOfWork.Commit();
-                return isNewVote ? VoteUpdateStatus.NewVoteInserted : VoteUpdateStatus.VoteUpdated;
+                voteUpdateStatus = isNewVote ? VoteUpdateStatus.NewVoteInserted : VoteUpdateStatus.VoteUpdated;
             }
             else if (existingVote.VoteType == voteType)
             {
                 await _unitOfWork.AnswerVotes.Delete(existingVote);
                 await _unitOfWork.Commit();
-                return VoteUpdateStatus.VoteRemoved;
+                voteUpdateStatus = VoteUpdateStatus.VoteRemoved;
             }
-            return VoteUpdateStatus.NoChange;
+            voteUpdateStatus = VoteUpdateStatus.NoChange;
+            return new VoteResponse { VoteCount = await GetAnswerVoteCount(answerId), VoteUpdateStatus = voteUpdateStatus }; 
+        }
+
+        public async Task<int> GetAnswerVoteCount(Guid answerId)
+        {
+            var x = await _unitOfWork.Answers.GetById(answerId);
+            return x.Votes?.Sum(x => (int)x.VoteType)??0;
         }
     }
 }

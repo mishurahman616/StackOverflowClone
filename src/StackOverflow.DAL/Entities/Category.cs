@@ -4,8 +4,8 @@ namespace StackOverflow.DAL.Entities
 {
     public class Category
     {
-        public long Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public virtual long Id { get; set; }
+        public virtual string Name { get; set; }
+        public virtual string Description { get; set; }
     }
 }

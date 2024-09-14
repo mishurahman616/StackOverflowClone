@@ -77,16 +77,16 @@ namespace StackOverflow.BL.Services
             else throw new PermissionMissingException("You do not have permission");
            
         }
-        public async Task<VoteUpdateStatus> UpdateQuestionVote(Guid questionId, Guid userId, VoteType voteType)
+        public async Task<VoteResponse> UpdateQuestionVote(Guid questionId, Guid userId, VoteType voteType)
         {
             var user = await _unitOfWork.Users.GetById(userId);
             var question = await _unitOfWork.Questions.GetById(questionId);
+            var voteUpdateStatus = VoteUpdateStatus.NoChange;
 
             if (user == null || question == null)
             {
-                return VoteUpdateStatus.NoChange;
+                voteUpdateStatus = VoteUpdateStatus.NoChange;
             }
-                
 
             var existingVote = await _unitOfWork.QuestionVotes.GetSingle(x => x.Question.Id == questionId && x.User.Id == userId);
             var isNewVote = existingVote == null;
@@ -107,15 +107,16 @@ namespace StackOverflow.BL.Services
 
                 await _unitOfWork.QuestionVotes.Create(newVote);
                 await _unitOfWork.Commit();
-                return isNewVote? VoteUpdateStatus.NewVoteInserted : VoteUpdateStatus.VoteUpdated;
+                voteUpdateStatus = isNewVote? VoteUpdateStatus.NewVoteInserted : VoteUpdateStatus.VoteUpdated;
             }
             else if (existingVote.VoteType == voteType)
             {
                 await _unitOfWork.QuestionVotes.Delete(existingVote);
                 await _unitOfWork.Commit();
-                return VoteUpdateStatus.VoteRemoved;
+                voteUpdateStatus = VoteUpdateStatus.VoteRemoved;
             }
-            return VoteUpdateStatus.NoChange;
+
+            return new VoteResponse { VoteCount = await GetQuestionVoteCount(questionId), VoteUpdateStatus = voteUpdateStatus };
         }
 
         public async Task<(IList<Question>questions, int total, int totalToDislplay, int totalPages)> GetPaginated(Expression<Func<Question, bool>>? predicate = null, int pageIndex=1, int pageSize = 1)
@@ -123,5 +124,10 @@ namespace StackOverflow.BL.Services
             return await _unitOfWork.Questions.GetPaginated(predicate, pageIndex, pageSize);
         }
 
+        public async Task<int> GetQuestionVoteCount(Guid questionId)
+        {
+            var x = await _unitOfWork.Questions.GetById(questionId);
+            return x.Votes?.Sum(x => (int)x.VoteType) ?? 0;
+        }
     }
 }

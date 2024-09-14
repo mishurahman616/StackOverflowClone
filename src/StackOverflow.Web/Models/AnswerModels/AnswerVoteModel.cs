@@ -28,7 +28,7 @@ namespace StackOverflow.Web.Models.AnswerModels
             _answerService = scope.Resolve<IAnswerService>();
         }
 
-        public async Task<VoteUpdateStatus> UpdateVote()
+        public async Task<VoteResponse> UpdateVote()
         {
             return await _answerService.UpdateAnswerVote(AnswerId, UserId, VoteType);
         }

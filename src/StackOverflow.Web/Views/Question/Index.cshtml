@@ -65,7 +65,7 @@
                         <div class="card-footer ">
                             <div class="row">
                                 <div class="col-4 d-flex justify-content-start">
-                                    Votes: <span class="vote-count-@question.Id.ToString("N")">@question.Votes?.Sum(vote => (int)vote.VoteType)</span>
+                                    Votes: <span class="vote-count vote-count-@question.Id.ToString("N")">@question.Votes?.Sum(vote => (int)vote.VoteType)</span>
                                     @if (User.Identity?.Name != null)
                                     {
                                         int myVote = (int?)question.Votes?.Where(x => x.User.UserName == User.Identity?.Name).FirstOrDefault()?.VoteType ?? 0;

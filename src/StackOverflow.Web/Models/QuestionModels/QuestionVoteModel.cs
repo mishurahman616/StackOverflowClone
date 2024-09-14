@@ -29,7 +29,7 @@ namespace StackOverflow.Web.Models.QuestionModels
             _questionService = scope.Resolve<IQuestionService>();
         }
 
-        public async Task<VoteUpdateStatus> UpdateVote()
+        public async Task<VoteResponse> UpdateVote()
         {
            return await _questionService.UpdateQuestionVote(QuestionId, UserId, VoteType);
         }

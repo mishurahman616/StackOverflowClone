@@ -199,7 +199,7 @@ namespace StackOverflow.Web.Controllers
         }
 
         [ValidateAntiForgeryToken]
-        public JsonResult UpdateVote(Guid id, string voteType)
+        public async Task<JsonResult> UpdateVote(Guid id, string voteType)
         {
             try
             {
@@ -209,8 +209,8 @@ namespace StackOverflow.Web.Controllers
                 model.UserId = userId;
                 model.QuestionId = id;
                 model.VoteType = Enum.Parse<VoteType>(voteType);
-                var message = model.UpdateVote().Result.ToString();
-                return Json(new { message});
+                var message = await model.UpdateVote();
+                return Json(new { message });
 
             }
             catch (Exception ex)
